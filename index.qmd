@@ -8,6 +8,7 @@ author:
     affiliation: "Observatoire de l’habitat, LISER"
 date: "2026-09-24"
 lang: fr
+license: "EUPL-1.2"
 format:
   html:
     theme: cosmo
@@ -154,6 +155,7 @@ Ce document **n’est pas une publication officielle** du STATEC ni de l’Obser
 
 - 📄 **Publication originale officielle** : [statistiques.public.lu](https://statistiques.public.lu/fr/publications/series/logement-chiffres/2026/logement-02-26.html)
 - 💻 **Dépôt GitHub du projet (code source & données)** : [github.com/b-rodrigues/statec-logement-chiffres](https://github.com/b-rodrigues/statec-logement-chiffres)
+- ⚖️ **Licence** : Code et restitution distribués sous [Licence Publique de l’Union Européenne (EUPL v1.2)](https://interoperable-europe.ec.europa.eu/sites/default/files/inline-files/EUPL%20v1_2%20FR.txt). Données statistiques sources issues des données ouvertes de l’État luxembourgeois ([data.public.lu](https://data.public.lu)).
 :::
 
 ::: {.callout-note appearance="minimal"}
@@ -1535,5 +1537,6 @@ Ces indices régionaux illustrent l’intérêt de disposer d’indicateurs terr
 ---
 
 ::: {.callout-note appearance="minimal"}
-**Note sur le projet** : Cette restitution interactive a été conçue comme une démonstration technique de transformation d’une publication PDF statique en document web dynamique et reproductible. Retrouvez l’ensemble du code source, de l'environnement Nix et des données extraites sur le dépôt GitHub : [github.com/b-rodrigues/statec-logement-chiffres](https://github.com/b-rodrigues/statec-logement-chiffres).
+**Note sur le projet & licence** : Cette restitution interactive a été conçue comme une démonstration technique de transformation d’une publication PDF statique en document web dynamique et reproductible. Retrouvez l’ensemble du code source, de l'environnement Nix et des données extraites sur le dépôt GitHub : [github.com/b-rodrigues/statec-logement-chiffres](https://github.com/b-rodrigues/statec-logement-chiffres).  
+Ce projet est distribué sous la [Licence Publique de l'Union Européenne (EUPL v1.2)](https://interoperable-europe.ec.europa.eu/sites/default/files/inline-files/EUPL%20v1_2%20FR.txt).
 :::

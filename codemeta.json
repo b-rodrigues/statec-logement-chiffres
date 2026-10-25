@@ -1,0 +1,43 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "statec-logement-chiffres",
+  "identifier": "statec-logement-chiffres",
+  "description": "Reproduction interactive et reproductible de la publication 'Le Logement en chiffres n°20' (STATEC / Observatoire de l'Habitat, Septembre 2026). Conversion d'un rapport PDF statique vers un document web Quarto dynamique intégrant graphiques interactifs et cartes choroplèthes communales en Observable JS.",
+  "version": "1.0.0",
+  "datePublished": "2026-10-25",
+  "license": "https://spdx.org/licenses/EUPL-1.2.html",
+  "codeRepository": "https://github.com/b-rodrigues/statec-logement-chiffres",
+  "url": "https://b-rodrigues.github.io/statec-logement-chiffres/",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Bruno",
+      "familyName": "Rodrigues",
+      "email": "brodriguesco@protonmail.com"
+    }
+  ],
+  "programmingLanguage": [
+    "R",
+    "JavaScript",
+    "Nix"
+  ],
+  "runtimePlatform": "Nix / Quarto",
+  "softwareRequirements": [
+    "Quarto >= 1.10",
+    "R >= 4.3",
+    "Pandoc >= 3.0"
+  ],
+  "keywords": [
+    "housing",
+    "luxembourg",
+    "statec",
+    "observatoire-de-l-habitat",
+    "quarto",
+    "observable-js",
+    "nix",
+    "open-data",
+    "reproducible-research",
+    "eupl"
+  ]
+}

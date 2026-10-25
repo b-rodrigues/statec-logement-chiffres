@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this software or data translation in your research or work, please cite it as below."
+title: "STATEC - Le Logement en chiffres (Édition web interactive Quarto & Observable JS)"
+abstract: "Reproduction interactive et reproductible de la publication 'Le Logement en chiffres n°20' (STATEC / Observatoire de l'Habitat, Septembre 2026). Conversion d'un rapport PDF statique vers un document web Quarto dynamique intégrant graphiques interactifs et cartes choroplèthes communales en Observable JS."
+authors:
+  - family-names: "Rodrigues"
+    given-names: "Bruno"
+    email: "brodriguesco@protonmail.com"
+version: "1.0.0"
+date-released: "2026-10-25"
+license: "EUPL-1.2"
+repository-code: "https://github.com/b-rodrigues/statec-logement-chiffres"
+url: "https://b-rodrigues.github.io/statec-logement-chiffres/"
+keywords:
+  - "housing"
+  - "luxembourg"
+  - "statec"
+  - "observatoire-de-l-habitat"
+  - "quarto"
+  - "observable-js"
+  - "nix"
+  - "open-data"
+  - "reproducible-research"
+  - "eupl"
+references:
+  - type: report
+    title: "Le Logement en chiffres — N° 20 — 2e trimestre 2026"
+    authors:
+      - family-names: "Ferring"
+        given-names: "Marc"
+      - family-names: "Licheron"
+        given-names: "Julien"
+    institution:
+      name: "STATEC & Observatoire de l'Habitat (LISER)"
+    year: 2026
+    month: 9
+    url: "https://statistiques.public.lu/en/publications/series/logement-chiffres/2026/logement-02-26.html"
