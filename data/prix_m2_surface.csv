@@ -1,0 +1,15 @@
+tranche_surface,type,prix_m2
+Moins de 50 m²,Appartements existants,9435
+Moins de 50 m²,Appartements en construction,11573
+De 50 à 69 m²,Appartements existants,8108
+De 50 à 69 m²,Appartements en construction,10362
+De 70 à 89 m²,Appartements existants,7534
+De 70 à 89 m²,Appartements en construction,9245
+De 90 à 109 m²,Appartements existants,7181
+De 90 à 109 m²,Appartements en construction,9148
+De 110 à 129 m²,Appartements existants,6861
+De 110 à 129 m²,Appartements en construction,8879
+130 m² et plus,Appartements existants,6441
+130 m² et plus,Appartements en construction,8063
+TOTAL,Appartements existants,7712
+TOTAL,Appartements en construction,9839

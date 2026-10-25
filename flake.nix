@@ -57,6 +57,7 @@
             pkgs.poppler-utils
             pythonEnv
           ];
+          QUARTO_R = "${rEnv}/bin/R";
         };
       }
     );

@@ -24,6 +24,64 @@ execute:
   message: false
 ---
 
+```{r}
+#| label: prep-data
+#| include: false
+library(dplyr)
+library(tidyr)
+
+indices_trim <- read.csv("data/indices_logements_trimestriel.csv")
+
+# Data preparation for Graphique 1
+g1_df <- indices_trim %>%
+  mutate(
+    trim_num = as.integer(substr(trimestre, 2, 2)),
+    month = sprintf("%02d", (trim_num - 1) * 3 + 1),
+    date = paste0(annee, "-", month, "-01"),
+    periode = paste0(annee, " ", trimestre)
+  ) %>%
+  select(
+    annee, trimestre, date, periode,
+    `Ensemble des logements` = var_annuelle_ensemble_pct,
+    `Maisons existantes` = var_annuelle_maisons_pct,
+    `Appartements existants` = var_annuelle_appartements_anciens_pct,
+    `Appartements en construction` = var_annuelle_neufs_pct
+  ) %>%
+  pivot_longer(
+    cols = c(`Ensemble des logements`, `Maisons existantes`, `Appartements existants`, `Appartements en construction`),
+    names_to = "serie",
+    values_to = "variation"
+  )
+
+ojs_define(g1_raw = g1_df)
+
+# Data preparation for Graphique 2
+tx_trim <- read.csv("data/transactions_volumes_trimestriel.csv")
+g2_df <- tx_trim %>%
+  mutate(
+    trim_num = as.integer(substr(trimestre, 2, 2)),
+    month = sprintf("%02d", (trim_num - 1) * 3 + 1),
+    date = paste0(annee, "-", month, "-01"),
+    periode = paste0(annee, " ", trimestre)
+  )
+
+ojs_define(g2_raw = g2_df)
+
+# Data for Graphique 5
+g5_df <- read.csv("data/prix_m2_surface.csv")
+ojs_define(g5_raw = g5_df)
+
+# Data for Graphique 6
+g6_df <- read.csv("data/prix_m2_regions.csv")
+ojs_define(g6_raw = g6_df)
+
+# Data for Graphique 7
+g7_df <- read.csv("data/prix_maisons_regions.csv") %>%
+  pivot_longer(cols = c(prix_moyen, prix_median), names_to = "statistique", values_to = "prix") %>%
+  mutate(statistique = ifelse(statistique == "prix_moyen", "Prix moyen", "Prix médian"))
+ojs_define(g7_raw = g7_df)
+```
+
 ::: {.callout-note appearance="minimal"}
 **Responsable de la publication** : Tom Haas  
 **Éditeurs** : STATEC & Observatoire de l’habitat (LISER)  
@@ -95,17 +153,79 @@ Volume financier
 
 Au deuxième trimestre 2026, les prix des logements sont en baisse en évolution annuelle. L’indice général (incluant à la fois les logements existants et en construction) fléchit ainsi de **-2.2%** par rapport au deuxième trimestre 2025. Ce repli s’explique par un effet de base : la forte activité du 2^e^ trimestre 2025, liée à l’anticipation de la fin des mesures fiscales, avait exercé une pression temporaire à la hausse sur les prix, qui s’est ensuite résorbée. Par rapport au trimestre précédent, l’indice général augmente de **+1.1%**.
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 1 : Baisse annuelle de l'indice général au deuxième trimestre 2026
-**Description** : Évolution temporelle trimestrielle (2017 T1 à 2026 T2) du taux de variation annuel des prix (en %) pour :
-- *Ensemble des logements*
-- *Maisons existantes*
-- *Appartements existants*
-- *Appartements en construction*
+### Graphique 1 : Baisse annuelle de l’indice général au deuxième trimestre 2026
 
-**Source** : Publicité Foncière, ECM. Calcul STATEC (`data/indices_logements_trimestriel.csv`).  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+```{ojs}
+//| echo: false
+g1_data = transpose(g1_raw).map(d => ({
+  ...d,
+  date: new Date(d.date)
+}))
+
+viewof selectedSeriesG1 = Inputs.checkbox(
+  ["Ensemble des logements", "Maisons existantes", "Appartements existants", "Appartements en construction"],
+  {
+    value: ["Ensemble des logements", "Maisons existantes", "Appartements existants", "Appartements en construction"],
+    label: "Séries :"
+  }
+)
+
+filteredG1 = g1_data.filter(d => selectedSeriesG1.includes(d.serie))
+
+Plot.plot({
+  title: "Taux de variation annuel des prix des logements, en %",
+  subtitle: "Série trimestrielle (2018 T1 à 2026 T2) — Source : Publicité Foncière, ECM. Calcul STATEC",
+  width: width,
+  height: 420,
+  marginTop: 35,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Taux de variation annuel (%)",
+    ticks: 10,
+    tickFormat: d => `${d > 0 ? "+" : ""}${d}%`
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  color: {
+    legend: true,
+    domain: [
+      "Ensemble des logements",
+      "Maisons existantes",
+      "Appartements existants",
+      "Appartements en construction"
+    ],
+    range: ["#111827", "#0284c7", "#f59e0b", "#ef4444"]
+  },
+  marks: [
+    Plot.ruleY([0], { stroke: "#9ca3af", strokeWidth: 1.5, strokeDasharray: "4,4" }),
+    Plot.lineY(filteredG1, {
+      x: "date",
+      y: "variation",
+      stroke: "serie",
+      strokeWidth: 2.2,
+      curve: "catmull-rom"
+    }),
+    Plot.dot(filteredG1, {
+      x: "date",
+      y: "variation",
+      stroke: "serie",
+      fill: "serie",
+      r: 3.5
+    }),
+    Plot.tip(
+      filteredG1,
+      Plot.pointerX({
+        x: "date",
+        y: "variation",
+        title: d => `${d.periode}\n${d.serie} : ${d.variation > 0 ? "+" : ""}${d.variation.toFixed(1)}%`
+      })
+    )
+  ]
+})
+```
 
 Sur le segment des appartements existants, l’indice hédonique est en hausse sur le trimestre (**+1.3%** par rapport au 1^er^ trimestre 2026), mais demeure toutefois légèrement inférieur à son niveau du deuxième trimestre 2025 (**-0.6%**). Cette évolution confirme la relative stabilisation observée sur ce segment depuis le début de l’année 2024. Après les fortes corrections enregistrées en 2023, les variations de prix apparaissent désormais plus modérées, même si la série reste influencée par les fluctuations de l’activité.
 
@@ -163,15 +283,121 @@ Sur le segment de la vente d’appartements existants, l’activité atteint **1
 
 En revanche, l’activité demeure beaucoup plus limitée sur le segment des appartements en construction (VEFA). Le nombre de transactions atteint **225 ventes** au 2^e^ trimestre 2026, pour un volume financier d’environ **171 millions d’EUR**. L’activité progresse de **+8.2%** par rapport au trimestre précédent, mais reste en recul de **-35.5%** par rapport au 2^e^ trimestre 2025. Le nombre de transactions demeure surtout très inférieur aux niveaux observés avant la crise : entre 2017 et 2021, le deuxième trimestre comptait en moyenne près de 694 ventes d’appartements en construction. Le niveau actuel est ainsi inférieur de près de 68% à cette moyenne.
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 2 : Nombre de ventes d’appartements et volumes financiers correspondants
-**Description** : Évolution trimestrielle de 2010 à 2026 :
-- *Axe de gauche (barres empilées)* : Nombre de ventes d'appartements en construction (VEFA) et nombre de ventes d'appartements existants.
-- *Axe de droite (courbe)* : Volume financier global des ventes d'appartements (en millions €).
+### Graphique 2 : Nombre de ventes d’appartements et volumes financiers correspondants
 
-**Source** : Fichier de la Publicité Foncière, STATEC - Observatoire de l’Habitat, AED (2010-2026).  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+```{ojs}
+//| echo: false
+g2_data = transpose(g2_raw).map(d => ({
+  ...d,
+  date: new Date(d.date)
+}))
+
+// Long format for stacked bar chart of apartment sales
+g2_sales_long = g2_data.flatMap(d => [
+  { date: d.date, periode: d.periode, type: "Appartements existants", count: d.nb_actes_ancien, total: d.nb_actes_total, vol: d.vol_fin_total_mio_eur },
+  { date: d.date, periode: d.periode, type: "Appartements en construction", count: d.nb_actes_neuf, total: d.nb_actes_total, vol: d.vol_fin_total_mio_eur }
+])
+
+viewof g2_view = Inputs.radio(
+  ["Vue combinée (ventes & volume)", "Nombre de ventes seulement", "Volume financier seulement"],
+  {
+    value: "Vue combinée (ventes & volume)",
+    label: "Affichage :"
+  }
+)
+
+chart_g2_sales = Plot.plot({
+  title: "Nombre de ventes d'appartements par trimestre",
+  subtitle: "Transactions notariées enregistrées (2018 T1 à 2026 T2)",
+  width: width,
+  height: g2_view === "Vue combinée (ventes & volume)" ? 280 : 380,
+  marginTop: 35,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Nombre d'actes"
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  color: {
+    legend: true,
+    domain: ["Appartements existants", "Appartements en construction"],
+    range: ["#0284c7", "#f59e0b"]
+  },
+  marks: [
+    Plot.rectY(g2_sales_long, Plot.stackY({
+      x: "date",
+      y: "count",
+      fill: "type",
+      interval: d3.timeMonth.every(3),
+      inset: 0.5
+    })),
+    Plot.tip(
+      g2_sales_long,
+      Plot.pointerX(Plot.stackY({
+        x: "date",
+        y: "count",
+        title: d => `${d.periode}\n${d.type} : ${d.count} ventes\nTotal ventes : ${d.total}\nVolume total : ${d.vol} M€`
+      }))
+    )
+  ]
+})
+
+chart_g2_vol = Plot.plot({
+  title: "Volume financier des ventes d'appartements",
+  subtitle: "En millions d'EUR (2018 T1 à 2026 T2)",
+  width: width,
+  height: g2_view === "Vue combinée (ventes & volume)" ? 220 : 380,
+  marginTop: 30,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Volume (millions €)"
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  marks: [
+    Plot.areaY(g2_data, {
+      x: "date",
+      y: "vol_fin_total_mio_eur",
+      fill: "#10b981",
+      fillOpacity: 0.25,
+      curve: "catmull-rom"
+    }),
+    Plot.lineY(g2_data, {
+      x: "date",
+      y: "vol_fin_total_mio_eur",
+      stroke: "#059669",
+      strokeWidth: 2.2,
+      curve: "catmull-rom"
+    }),
+    Plot.dot(g2_data, {
+      x: "date",
+      y: "vol_fin_total_mio_eur",
+      stroke: "#059669",
+      fill: "#ffffff",
+      r: 3.5
+    }),
+    Plot.tip(
+      g2_data,
+      Plot.pointerX({
+        x: "date",
+        y: "vol_fin_total_mio_eur",
+        title: d => `${d.periode}\nVolume : ${d.vol_fin_total_mio_eur} millions €`
+      })
+    )
+  ]
+})
+
+html`<div>
+  ${g2_view !== "Volume financier seulement" ? chart_g2_sales : ""}
+  ${g2_view !== "Nombre de ventes seulement" ? chart_g2_vol : ""}
+</div>`
+```
 
 ### Marché de la vente de maisons
 
@@ -215,39 +441,186 @@ Le prix de vente par m² dépend principalement du type d’appartement, de sa s
 
 La localisation est également un facteur explicatif déterminant des prix des maisons existantes. Dans le canton de Luxembourg, le prix moyen d’une maison s’élève ainsi à **1 370 000 EUR** environ, **88% plus élevé** que le prix moyen dans le nord du pays. Pour les maisons, les prix médians par région sont inférieurs aux prix moyens par zone géographique, ce qui indique une forte asymétrie dans la distribution des prix de vente.
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 5 : Les prix de vente par m² des appartements ont tendance à décroître avec la surface du logement
-**Description** : Prix moyen par m² (en €/m²) selon la tranche de surface (transactions du 1^er^ juillet 2025 au 30 juin 2026) :
-- *Tranches de surface* : Moins de 50 m², De 50 à 69 m², De 70 à 89 m², De 90 à 109 m², De 110 à 129 m², 130 m² et plus, TOTAL.
-- *Comparaison* : Appartements existants (de 9 435 €/m² pour <50m² à 6 441 €/m² pour ≥130m², moyenne 7 712 €/m²) vs Appartements en construction (de 11 573 €/m² à 8 063 €/m², moyenne 9 839 €/m²).
+### Graphique 5 : Les prix de vente par m² des appartements selon la surface
 
-**Source** : Publicité Foncière, Calcul STATEC – Observatoire de l’Habitat.  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+```{ojs}
+//| echo: false
+g5_data = transpose(g5_raw)
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 6 : Les prix de vente par m² des appartements sont fortement influencés par la distance vis-à-vis de Luxembourg-Ville
-**Description** : Prix de vente moyen par m² (en €/m²) par zone géographique (transactions du 1^er^ juillet 2025 au 30 juin 2026) :
-- *Zones* : Canton de Luxembourg (existant : 9 811 €/m² ; neuf : 11 795 €/m²), Capellen-Mersch (7 376 vs 8 697), Canton d'Esch-sur-Alzette (6 835 vs 8 707), Est (6 833 vs 8 448), Nord (6 079 vs 7 735), TOTAL pays (7 712 vs 9 839).
-- *Comparaison* : Appartements existants vs Appartements en construction.
+Plot.plot({
+  title: "Prix de vente moyen par m² des appartements selon la surface",
+  subtitle: "Transactions du 1er juillet 2025 au 30 juin 2026 (€/m²) — Source : Publicité Foncière, STATEC",
+  width: width,
+  height: 380,
+  marginTop: 35,
+  marginRight: 20,
+  fx: {
+    domain: [
+      "Moins de 50 m²",
+      "De 50 à 69 m²",
+      "De 70 à 89 m²",
+      "De 90 à 109 m²",
+      "De 110 à 129 m²",
+      "130 m² et plus",
+      "TOTAL"
+    ],
+    label: null
+  },
+  x: {
+    axis: null
+  },
+  y: {
+    grid: true,
+    label: "Prix moyen (€ / m²)",
+    ticks: 8,
+    tickFormat: d => `${d3.format(",")(d)} €`
+  },
+  color: {
+    legend: true,
+    domain: ["Appartements existants", "Appartements en construction"],
+    range: ["#0284c7", "#f59e0b"]
+  },
+  marks: [
+    Plot.barY(g5_data, {
+      fx: "tranche_surface",
+      x: "type",
+      y: "prix_m2",
+      fill: "type",
+      tip: true
+    }),
+    Plot.text(g5_data, {
+      fx: "tranche_surface",
+      x: "type",
+      y: "prix_m2",
+      text: d => `${d3.format(",")(d.prix_m2)} €`,
+      dy: -8,
+      fontSize: 10,
+      fontWeight: "bold",
+      fill: "#374151"
+    })
+  ]
+})
+```
 
-**Source** : Publicité Foncière, Calcul STATEC – Observatoire de l’Habitat.  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+### Graphique 6 : Les prix de vente par m² des appartements selon la région
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 7 : Les prix de vente des maisons sont également fortement influencés par la distance vis-à-vis de la capitale
-**Description** : Comparaison du Prix moyen (€) et du Prix médian (€) des maisons existantes par zone géographique (transactions du 1^er^ juillet 2025 au 30 juin 2026) :
-- *Canton de Luxembourg* : Moyen 1 372 796 € | Médian 1 300 000 €
-- *Capellen-Mersch* : Moyen 1 038 558 € | Médian 1 005 000 €
-- *Est* : Moyen 882 472 € | Médian 842 500 €
-- *Canton d'Esch-sur-Alzette* : Moyen 803 815 € | Médian 740 000 €
-- *Nord* : Moyen 729 993 € | Médian 686 000 €
-- *TOTAL pays* : Moyen 945 274 € | Médian 870 000 €
+```{ojs}
+//| echo: false
+g6_data = transpose(g6_raw)
 
-**Source** : Publicité Foncière, Calcul STATEC – Observatoire de l’Habitat.  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+Plot.plot({
+  title: "Prix de vente moyen par m² des appartements par région",
+  subtitle: "Influence de la distance vis-à-vis de la capitale (1er juillet 2025 au 30 juin 2026)",
+  width: width,
+  height: 380,
+  marginTop: 35,
+  marginRight: 20,
+  fx: {
+    domain: [
+      "Canton de Luxembourg",
+      "Capellen-Mersch",
+      "Canton d'Esch-sur-Alzette",
+      "Est",
+      "Nord",
+      "TOTAL"
+    ],
+    label: null
+  },
+  x: {
+    axis: null
+  },
+  y: {
+    grid: true,
+    label: "Prix moyen (€ / m²)",
+    ticks: 8,
+    tickFormat: d => `${d3.format(",")(d)} €`
+  },
+  color: {
+    legend: true,
+    domain: ["Appartements existants", "Appartements en construction"],
+    range: ["#0284c7", "#f59e0b"]
+  },
+  marks: [
+    Plot.barY(g6_data, {
+      fx: "region",
+      x: "type",
+      y: "prix_m2",
+      fill: "type",
+      tip: true
+    }),
+    Plot.text(g6_data, {
+      fx: "region",
+      x: "type",
+      y: "prix_m2",
+      text: d => `${d3.format(",")(d.prix_m2)} €`,
+      dy: -8,
+      fontSize: 10,
+      fontWeight: "bold",
+      fill: "#374151"
+    })
+  ]
+})
+```
+
+### Graphique 7 : Les prix de vente des maisons par région
+
+```{ojs}
+//| echo: false
+g7_data = transpose(g7_raw)
+
+Plot.plot({
+  title: "Prix moyen et prix médian des maisons existantes par région",
+  subtitle: "Transactions du 1er juillet 2025 au 30 juin 2026 (€) — Source : Publicité Foncière, STATEC",
+  width: width,
+  height: 380,
+  marginTop: 35,
+  marginRight: 20,
+  fx: {
+    domain: [
+      "Canton de Luxembourg",
+      "Capellen-Mersch",
+      "Est",
+      "Canton d'Esch-sur-Alzette",
+      "Nord",
+      "TOTAL"
+    ],
+    label: null
+  },
+  x: {
+    axis: null
+  },
+  y: {
+    grid: true,
+    label: "Prix (€)",
+    ticks: 8,
+    tickFormat: d => `${(d / 1000).toFixed(0)} k€`
+  },
+  color: {
+    legend: true,
+    domain: ["Prix moyen", "Prix médian"],
+    range: ["#1e40af", "#38bdf8"]
+  },
+  marks: [
+    Plot.barY(g7_data, {
+      fx: "region",
+      x: "statistique",
+      y: "prix",
+      fill: "statistique",
+      tip: true
+    }),
+    Plot.text(g7_data, {
+      fx: "region",
+      x: "statistique",
+      y: "prix",
+      text: d => `${(d.prix / 1000).toFixed(0)} k€`,
+      dy: -8,
+      fontSize: 10,
+      fontWeight: "bold",
+      fill: "#374151"
+    })
+  ]
+})
+```
 
 ---
 
