@@ -148,6 +148,14 @@ g11_df <- read.csv("data/focus_regional_appartements_vefa.csv")
 ojs_define(g11_raw = g11_df)
 ```
 
+::: {.callout-warning appearance="default" icon=true}
+### ⚠️ Avertissement : Projet expérimental non officiel
+Ce document **n’est pas une publication officielle** du STATEC ni de l’Observatoire de l’Habitat. Il s’agit d’une **expérience de conversion** d’une publication PDF statique (*Le Logement en chiffres n°20 — Septembre 2026*) vers un document web interactif et reproductible réalisé avec **Quarto** et des visualisations interactives en **Observable JS**.
+
+- 📄 **Publication originale officielle** : [statistiques.public.lu](https://statistiques.public.lu/fr/publications/series/logement-chiffres/2026/logement-02-26.html)
+- 💻 **Dépôt GitHub du projet (code source & données)** : [github.com/b-rodrigues/statec-logement-chiffres](https://github.com/b-rodrigues/statec-logement-chiffres)
+:::
+
 ::: {.callout-note appearance="minimal"}
 **Responsable de la publication** : Tom Haas  
 **Éditeurs** : STATEC & Observatoire de l’habitat (LISER)  
@@ -1523,3 +1531,9 @@ html`<div>
 Dans l’ensemble, les résultats suggèrent que les écarts territoriaux sont davantage marqués sur le marché du neuf que sur celui de l’existant. Alors que les prix des appartements existants présentent des évolutions relativement similaires entre la région de Luxembourg et le reste du pays sur le long terme, les appartements VEFA affichent une croissance beaucoup plus forte dans la région de la capitale. Cette différence pourrait refléter une pression plus importante sur le foncier constructible dans les communes les plus attractives du pays ainsi qu’une concentration des nouveaux projets résidentiels dans des zones où la demande reste structurellement élevée.
 
 Ces indices régionaux illustrent l’intérêt de disposer d’indicateurs territorialisés afin de mieux comprendre l’hétérogénéité des marchés immobiliers luxembourgeois, une orientation qui s’inscrit dans les travaux actuellement encouragés au niveau européen en matière de statistiques du logement.
+
+---
+
+::: {.callout-note appearance="minimal"}
+**Note sur le projet** : Cette restitution interactive a été conçue comme une démonstration technique de transformation d’une publication PDF statique en document web dynamique et reproductible. Retrouvez l’ensemble du code source, de l'environnement Nix et des données extraites sur le dépôt GitHub : [github.com/b-rodrigues/statec-logement-chiffres](https://github.com/b-rodrigues/statec-logement-chiffres).
+:::
