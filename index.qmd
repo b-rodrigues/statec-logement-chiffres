@@ -1008,12 +1008,24 @@ chart_map = Plot.plot({
     Plot.geo(communes_features, {
       fill: d => is_existant ? d.properties.cat_existant : d.properties.cat_neuf,
       stroke: "#64748b",
-      strokeWidth: 0.6,
-      tip: true,
-      title: d => is_existant
-        ? `${d.properties.commune} (${d.properties.canton})\nPrix moyen : ${d.properties.prix_existant ? d.properties.prix_existant + ' €/m²' : 'Données insuffisantes (< 5 ventes)'}\nActes enregistrés : ${d.properties.nb_existant != null ? d.properties.nb_existant : 'N/A'}\nFourchette : ${d.properties.fourchette_existant}`
-        : `${d.properties.commune} (${d.properties.canton})\nPrix moyen : ${d.properties.prix_neuf ? d.properties.prix_neuf + ' €/m²' : 'Données insuffisantes (< 5 ventes)'}\nActes enregistrés : ${d.properties.nb_neuf != null ? d.properties.nb_neuf : 'N/A'}\nFourchette : ${d.properties.fourchette_neuf}`
-    })
+      strokeWidth: 0.6
+    }),
+    Plot.tip(
+      communes_features,
+      Plot.pointer(
+        Plot.geoCentroid({
+          title: d => is_existant
+            ? `${d.properties.commune} (${d.properties.canton})\n` +
+              `Prix moyen : ${d.properties.prix_existant ? d.properties.prix_existant.toLocaleString("fr-FR") + " €/m²" : "Données insuffisantes (< 5 ventes)"}\n` +
+              `Ventes enregistrées : ${d.properties.nb_existant != null ? d.properties.nb_existant : "N/A"}\n` +
+              `Fourchette (Q1 - Q3) : ${d.properties.fourchette_existant}`
+            : `${d.properties.commune} (${d.properties.canton})\n` +
+              `Prix moyen : ${d.properties.prix_neuf ? d.properties.prix_neuf.toLocaleString("fr-FR") + " €/m²" : "Données insuffisantes (< 5 ventes)"}\n` +
+              `Ventes enregistrées : ${d.properties.nb_neuf != null ? d.properties.nb_neuf : "N/A"}\n` +
+              `Fourchette (Q1 - Q3) : ${d.properties.fourchette_neuf}`
+        })
+      )
+    )
   ]
 })
 ```
