@@ -224,6 +224,32 @@ download_if_missing(urls$communes, file_communes)
 download_if_missing(urls$loyers, file_loyers)
 download_if_missing(urls$geojson, file_geojson)
 
+# Ensure GeoJSON polygon rings follow RFC 7946 / D3 winding order (counter-clockwise exterior rings)
+if (file.exists(file_geojson)) {
+  rewind_ring <- function(ring) {
+    xs <- sapply(ring, function(pt) pt[[1]])
+    ys <- sapply(ring, function(pt) pt[[2]])
+    n <- length(xs)
+    area <- sum((xs[-1] - xs[-n]) * (ys[-1] + ys[-n]))
+    if (area < 0) rev(ring) else ring
+  }
+  gj <- jsonlite::read_json(file_geojson)
+  modified <- FALSE
+  for (i in seq_along(gj$features)) {
+    geom <- gj$features[[i]]$geometry
+    if (geom$type == "Polygon") {
+      gj$features[[i]]$geometry$coordinates <- lapply(geom$coordinates, rewind_ring)
+      modified <- TRUE
+    } else if (geom$type == "MultiPolygon") {
+      gj$features[[i]]$geometry$coordinates <- lapply(geom$coordinates, function(poly) lapply(poly, rewind_ring))
+      modified <- TRUE
+    }
+  }
+  if (modified) {
+    jsonlite::write_json(gj, file_geojson, auto_unbox = TRUE)
+  }
+}
+
 # --- 2.1 Houses Sales & Financial Volumes (Graphique 3) ---
 if (file.exists(file_maisons)) {
   df_maisons <- read_excel(file_maisons, skip = 5) %>%

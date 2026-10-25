@@ -886,37 +886,53 @@ Plot.plot({
 //| echo: false
 communes_dict = new Map(transpose(communes_prix_raw).map(d => [d.commune, d]))
 
+rewind_feature = (f) => {
+  if (d3.geoArea(f) > 2 * Math.PI) {
+    const geom = f.geometry;
+    let coords = geom.coordinates;
+    if (geom.type === "Polygon") {
+      coords = coords.map(ring => ring.slice().reverse());
+    } else if (geom.type === "MultiPolygon") {
+      coords = coords.map(poly => poly.map(ring => ring.slice().reverse()));
+    }
+    return { ...f, geometry: { ...geom, coordinates: coords } };
+  }
+  return f;
+}
+
+communes_features = communes_geo.features.map(f => {
+  const rf = rewind_feature(f);
+  const p = communes_dict.get(rf.properties.COMMUNE) || {};
+  return {
+    ...rf,
+    properties: {
+      commune: rf.properties.COMMUNE,
+      canton: rf.properties.CANTON,
+      nb_existant: p.nb_ventes_existant != null ? p.nb_ventes_existant : null,
+      prix_existant: p.prix_m2_existant != null ? Math.round(p.prix_m2_existant) : null,
+      fourchette_existant: p.fourchette_existant || "*",
+      nb_neuf: p.nb_ventes_neuf != null ? p.nb_ventes_neuf : null,
+      prix_neuf: p.prix_m2_neuf != null ? Math.round(p.prix_m2_neuf) : null,
+      fourchette_neuf: p.fourchette_neuf || "*",
+      cat_existant: !p.prix_m2_existant ? "Données insuffisantes (< 5 ventes)" :
+        p.prix_m2_existant < 6000 ? "Moins de 6 000 €/m²" :
+        p.prix_m2_existant < 7000 ? "6 000 à 6 999 €/m²" :
+        p.prix_m2_existant < 8000 ? "7 000 à 7 999 €/m²" :
+        p.prix_m2_existant < 9000 ? "8 000 à 8 999 €/m²" :
+        p.prix_m2_existant < 10000 ? "9 000 à 9 999 €/m²" : "10 000 €/m² et plus",
+      cat_neuf: !p.prix_m2_neuf ? "Données insuffisantes (< 5 ventes)" :
+        p.prix_m2_neuf < 8000 ? "Moins de 8 000 €/m²" :
+        p.prix_m2_neuf < 9000 ? "8 000 à 8 999 €/m²" :
+        p.prix_m2_neuf < 10000 ? "9 000 à 9 999 €/m²" :
+        p.prix_m2_neuf < 11000 ? "10 000 à 10 999 €/m²" :
+        p.prix_m2_neuf < 12000 ? "11 000 à 11 999 €/m²" : "12 000 €/m² et plus"
+    }
+  };
+})
+
 geo_communes = ({
   type: "FeatureCollection",
-  features: communes_geo.features.map(f => {
-    const p = communes_dict.get(f.properties.COMMUNE) || {};
-    return {
-      type: "Feature",
-      geometry: f.geometry,
-      properties: {
-        commune: f.properties.COMMUNE,
-        canton: f.properties.CANTON,
-        nb_existant: p.nb_ventes_existant != null ? p.nb_ventes_existant : null,
-        prix_existant: p.prix_m2_existant != null ? Math.round(p.prix_m2_existant) : null,
-        fourchette_existant: p.fourchette_existant || "*",
-        nb_neuf: p.nb_ventes_neuf != null ? p.nb_ventes_neuf : null,
-        prix_neuf: p.prix_m2_neuf != null ? Math.round(p.prix_m2_neuf) : null,
-        fourchette_neuf: p.fourchette_neuf || "*",
-        cat_existant: !p.prix_m2_existant ? "Données insuffisantes (< 5 ventes)" :
-          p.prix_m2_existant < 6000 ? "Moins de 6 000 €/m²" :
-          p.prix_m2_existant < 7000 ? "6 000 à 6 999 €/m²" :
-          p.prix_m2_existant < 8000 ? "7 000 à 7 999 €/m²" :
-          p.prix_m2_existant < 9000 ? "8 000 à 8 999 €/m²" :
-          p.prix_m2_existant < 10000 ? "9 000 à 9 999 €/m²" : "10 000 €/m² et plus",
-        cat_neuf: !p.prix_m2_neuf ? "Données insuffisantes (< 5 ventes)" :
-          p.prix_m2_neuf < 8000 ? "Moins de 8 000 €/m²" :
-          p.prix_m2_neuf < 9000 ? "8 000 à 8 999 €/m²" :
-          p.prix_m2_neuf < 10000 ? "9 000 à 9 999 €/m²" :
-          p.prix_m2_neuf < 11000 ? "10 000 à 10 999 €/m²" :
-          p.prix_m2_neuf < 12000 ? "11 000 à 11 999 €/m²" : "12 000 €/m² et plus"
-      }
-    };
-  })
+  features: communes_features
 })
 
 viewof map_segment = Inputs.radio(
@@ -977,7 +993,7 @@ chart_map = Plot.plot({
     ? "Transactions notariées du 1er juillet 2025 au 30 juin 2026 — Moyenne nationale : 7 712 €/m²"
     : "Transactions notariées du 1er juillet 2025 au 30 juin 2026 — Moyenne nationale : 9 839 €/m²",
   width: width,
-  height: 560,
+  height: 580,
   projection: {
     type: "mercator",
     domain: geo_communes
@@ -989,10 +1005,10 @@ chart_map = Plot.plot({
     legend: true
   },
   marks: [
-    Plot.geo(geo_communes, {
+    Plot.geo(communes_features, {
       fill: d => is_existant ? d.properties.cat_existant : d.properties.cat_neuf,
       stroke: "#64748b",
-      strokeWidth: 0.5,
+      strokeWidth: 0.6,
       tip: true,
       title: d => is_existant
         ? `${d.properties.commune} (${d.properties.canton})\nPrix moyen : ${d.properties.prix_existant ? d.properties.prix_existant + ' €/m²' : 'Données insuffisantes (< 5 ventes)'}\nActes enregistrés : ${d.properties.nb_existant != null ? d.properties.nb_existant : 'N/A'}\nFourchette : ${d.properties.fourchette_existant}`
