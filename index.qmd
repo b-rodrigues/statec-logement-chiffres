@@ -1,0 +1,376 @@
+---
+title: "Le Logement en chiffres"
+subtitle: "Deuxième trimestre 2026 — N°20 Septembre 2026"
+author:
+  - name: "Marc Ferring"
+    affiliation: "STATEC"
+  - name: "Dr Julien Licheron"
+    affiliation: "Observatoire de l’habitat, LISER"
+date: "2026-09-24"
+lang: fr
+format:
+  html:
+    theme: cosmo
+    embed-resources: true
+    toc: true
+    toc-depth: 3
+    toc-title: "Sommaire"
+    number-sections: false
+    smooth-scroll: true
+    code-fold: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+::: {.callout-note appearance="minimal"}
+**Responsable de la publication** : Tom Haas  
+**Éditeurs** : STATEC & Observatoire de l’habitat (LISER)  
+**Date de clôture statistique** : Juin 2026 — ISSN 2738-9464  
+[www.statistiques.lu](https://www.statistiques.lu) — `info@statec.etat.lu`
+:::
+
+---
+
+## Synthèse : Chiffres clés
+
+Évolution entre le 2^e^ trimestre 2025 et le 2^e^ trimestre 2026 (Source : Publicité Foncière, calcul STATEC - Observatoire de l'Habitat) :
+
+::: {layout-ncol=4}
+::: {.card .text-center .p-2}
+### Indice général
+# -2.2 %
+Logements anciens et neufs
+:::
+
+::: {.card .text-center .p-2}
+### Appartements existants
+# -0.6 %
+Prix à la vente
+:::
+
+::: {.card .text-center .p-2}
+### Maisons existantes
+# -3.7 %
+Prix à la vente
+:::
+
+::: {.card .text-center .p-2}
+### En construction (VEFA)
+# -2.5 %
+Appartements neufs
+:::
+:::
+
+::: {layout-ncol=4}
+::: {.card .text-center .p-2}
+### Ventes appart. existants
+# -33.4 %
+Nombre de transactions
+:::
+
+::: {.card .text-center .p-2}
+### Volume appart. existants
+# -34.3 %
+Volume financier
+:::
+
+::: {.card .text-center .p-2}
+### Ventes maisons
+# -35.2 %
+Nombre de transactions
+:::
+
+::: {.card .text-center .p-2}
+### Volume maisons
+# -39.1 %
+Volume financier
+:::
+:::
+
+---
+
+## 1. Évolution récente des prix des logements
+
+Au deuxième trimestre 2026, les prix des logements sont en baisse en évolution annuelle. L’indice général (incluant à la fois les logements existants et en construction) fléchit ainsi de **-2.2%** par rapport au deuxième trimestre 2025. Ce repli s’explique par un effet de base : la forte activité du 2^e^ trimestre 2025, liée à l’anticipation de la fin des mesures fiscales, avait exercé une pression temporaire à la hausse sur les prix, qui s’est ensuite résorbée. Par rapport au trimestre précédent, l’indice général augmente de **+1.1%**.
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 1 : Baisse annuelle de l'indice général au deuxième trimestre 2026
+**Description** : Évolution temporelle trimestrielle (2017 T1 à 2026 T2) du taux de variation annuel des prix (en %) pour :
+- *Ensemble des logements*
+- *Maisons existantes*
+- *Appartements existants*
+- *Appartements en construction*
+
+**Source** : Publicité Foncière, ECM. Calcul STATEC (`data/indices_logements_trimestriel.csv`).  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+Sur le segment des appartements existants, l’indice hédonique est en hausse sur le trimestre (**+1.3%** par rapport au 1^er^ trimestre 2026), mais demeure toutefois légèrement inférieur à son niveau du deuxième trimestre 2025 (**-0.6%**). Cette évolution confirme la relative stabilisation observée sur ce segment depuis le début de l’année 2024. Après les fortes corrections enregistrées en 2023, les variations de prix apparaissent désormais plus modérées, même si la série reste influencée par les fluctuations de l’activité.
+
+Les maisons anciennes présentent une évolution différente. Après la progression observée au 1^er^ trimestre 2026, l’indice recule légèrement de **-0.5%** au 2^e^ trimestre. Sur douze mois, le recul atteint **-3.7%**. La baisse est donc plus marquée que pour les appartements existants, alors même que le marché des maisons connaît encore des volumes de transactions inférieurs à ceux observés avant la crise.
+
+Le marché des logements neufs demeure quant à lui particulièrement volatil. Les prix des appartements en construction progressent de **+3.9%** sur le trimestre, mais restent inférieurs de **-2.5%** à leur niveau du 2^e^ trimestre 2025. Comme lors des périodes précédentes, cette volatilité doit être interprétée avec prudence compte tenu du nombre relativement faible de transactions observées sur ce segment et des effets de composition qui peuvent en découler.
+
+### Tableau 1 : Les maisons existantes en légère baisse au deuxième trimestre 2026
+*Taux de variation par rapport au trimestre précédent (Source : Publicité Foncière, ECM. Calculs STATEC)*
+
+| Trimestre | Indice général | Indice logements existants | Indice maisons existantes | Indice appartements existants | Indice appartements en construction |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **2025_01** | -1.1% | -1.1% | -1.3% | -0.8% | -1.2% |
+| **2025_02** | +4.7% | +4.1% | +5.5% | +2.8% | +7.6% |
+| **2025_03** | -3.6% | -3.6% | -5.0% | -2.4% | -3.4% |
+| **2025_04** | 0.0%  | +0.2% | -0.3% | +0.7% | -0.7% |
+| **2026_01** | +0.3% | +1.0% | +2.2% | -0.2% | -2.2% |
+| **2026_02** | +1.1% | +0.4% | -0.5% | +1.3% | +3.9% |
+
+::: {.callout-note}
+#### Encadré : Méthodologie de l'indice hédonique
+Tous ces résultats proviennent des indices hédoniques des prix des logements, calculés par le STATEC. Les indices sont compilés à « qualité constante », c’est-à-dire que les changements dans la structure des appartements et maisons vendus lors des différents trimestres sont neutralisés. L’ajustement de la qualité est un aspect primordial dans l’élaboration des séries indiciaires. En effet, une partie de la variation des prix des logements s’explique par la forte hétérogénéité de ces derniers vendus lors de deux périodes de comparaison. Afin de mesurer des évolutions de prix « pures », les variations de prix attribuables aux différences des caractéristiques des logements compris dans l’échantillon seront neutralisées.
+
+Il s’agit en particulier des caractéristiques suivantes pour les **appartements** : la surface de l’appartement, le type de vente (ancien ou neuf), l’existence d’une cave, l’existence d’un garage, parking ou emplacement, le temps de trajet entre la commune où se situe l’appartement et la Ville de Luxembourg.
+
+Pour les **maisons existantes**, les caractéristiques suivantes sont prises en compte : la surface et la contenance de la maison, type de bâtiment (maison détachée ou jumelée), nombre de pièces et nombre de salles de bains, l’année de construction, le nombre de places de parking abritées, la réalisation de gros travaux, le temps de trajet entre la commune où se situe la maison et la Ville de Luxembourg.
+
+*Pour plus d’informations, veuillez consulter les working papers du STATEC :*  
+- [Un indice des prix hédonique des appartements (44-2010)](https://statistiques.public.lu/fr/publications/series/economie-statistiques/2010/44-2010.html)  
+- [L’indice des prix des maisons anciennes (79-2015)](https://statistiques.public.lu/fr/publications/series/economie-statistiques/2015/79-2015.html)
+:::
+
+::: {.callout-note}
+#### Encadré : Adaptation de la méthodologie de l’indice hédonique
+La méthodologie de calcul de l’indice hédonique des prix a été adaptée : le temps de trajet remplace désormais la distance à la ville de Luxembourg comme variable de localisation. Ce changement n’a qu’un effet limité sur l’évolution de l’indice global (-1.6% au lieu de -2.2% en variation annuelle des prix immobiliers au 2^e^ trimestre), mais son impact n’est pas négligeable pour certains segments du marché, notamment les appartements vendus en état futur d’achèvement (VEFA), dont la baisse de prix est nettement moins élevée (-0.3% au lieu de -3.6% en variation annuelle). Cette nouvelle méthodologie a été présentée dans la publication du logement en chiffres de septembre 2025 (pp. 20-23) et le [Working Paper 148/2026 du STATEC](https://statistiques.public.lu/fr/publications/series/economie-statistiques/2026/07-26.html) détaille le changement de la variable de localisation.
+:::
+
+---
+
+## 2. Évolution récente du nombre de transactions et du volume financier des logements
+
+Après la forte reprise observée au cours de l’année 2025, marquée notamment par un niveau d’activité exceptionnel au 2^e^ trimestre en raison de l’expiration annoncée de plusieurs mesures fiscales temporaires, le marché immobilier résidentiel a désormais retrouvé un rythme nettement plus modéré. Les données du 2^e^ trimestre 2026 confirment ainsi la normalisation progressive de l’activité après les fluctuations importantes observées au cours des dernières années.
+
+Le contraste avec le 2^e^ trimestre 2025 est particulièrement marqué. Le niveau exceptionnellement élevé des transactions enregistré à cette période avait été largement alimenté par des anticipations d’achats et de ventes liées à l’échéance des mesures fiscales. Un an plus tard, le nombre de transactions apparaît sensiblement plus faible sur l’ensemble des principaux segments. Cette comparaison doit donc être interprétée avec prudence : elle traduit en partie le contrecoup du pic d’activité observé en 2025, plutôt qu’une dégradation récente et généralisée du marché.
+
+Sur le marché des logements existants, l’activité demeure toutefois sensiblement supérieure aux niveaux observés durant la phase la plus aiguë du ralentissement immobilier entre 2023 et le début de l’année 2024. Le nombre de transactions d’appartements existants atteint ainsi **1 049 ventes** au 2^e^ trimestre 2026, tandis que **709 maisons** ont été vendues. En revanche, le segment des appartements en construction reste particulièrement peu dynamique, avec seulement **225 transactions** enregistrées au cours du trimestre.
+
+### Marché de la vente d'appartements
+
+Le nombre de transactions portant sur des appartements, qu’ils soient existants ou en construction, atteint **1 274 ventes** au 2^e^ trimestre 2026. Cela représente une progression de **+8.2%** par rapport au trimestre précédent, mais un recul très marqué de **-33.9%** par rapport au 2^e^ trimestre 2025. Le volume financier correspondant s’élève à environ **811 millions d’EUR**. Il progresse de **+11.6%** par rapport au 1^er^ trimestre 2026, mais diminue de **-35.7%** sur douze mois.
+
+Le recul sur douze mois doit toutefois être replacé dans le contexte exceptionnel du 2^e^ trimestre 2025, qui avait enregistré 1 928 ventes d’appartements, soit le niveau trimestriel le plus élevé de la série récente. Le niveau actuel reste donc inférieur à celui observé avant la crise immobilière, mais l’écart est beaucoup plus limité sur le segment des appartements existants.
+
+Sur le segment de la vente d’appartements existants, l’activité atteint **1 049 transactions** au 2^e^ trimestre 2026. Le nombre de ventes augmente de **+8.3%** par rapport au trimestre précédent, mais recule de **-33.6%** sur douze mois. Le volume financier correspondant s’élève à environ **640 millions d’EUR**, en hausse de **+11.7%** sur le trimestre, mais en baisse de **-34.6%** par rapport au 2^e^ trimestre 2025. Entre 2017 et 2021, le nombre moyen de ventes au deuxième trimestre atteignait environ 1 035 transactions. Le niveau enregistré au 2^e^ trimestre 2026 est donc légèrement supérieur à cette moyenne (+1.3%). Cette comparaison suggère que, sur ce segment, la normalisation de l’activité est désormais largement engagée.
+
+En revanche, l’activité demeure beaucoup plus limitée sur le segment des appartements en construction (VEFA). Le nombre de transactions atteint **225 ventes** au 2^e^ trimestre 2026, pour un volume financier d’environ **171 millions d’EUR**. L’activité progresse de **+8.2%** par rapport au trimestre précédent, mais reste en recul de **-35.5%** par rapport au 2^e^ trimestre 2025. Le nombre de transactions demeure surtout très inférieur aux niveaux observés avant la crise : entre 2017 et 2021, le deuxième trimestre comptait en moyenne près de 694 ventes d’appartements en construction. Le niveau actuel est ainsi inférieur de près de 68% à cette moyenne.
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 2 : Nombre de ventes d’appartements et volumes financiers correspondants
+**Description** : Évolution trimestrielle de 2010 à 2026 :
+- *Axe de gauche (barres empilées)* : Nombre de ventes d'appartements en construction (VEFA) et nombre de ventes d'appartements existants.
+- *Axe de droite (courbe)* : Volume financier global des ventes d'appartements (en millions €).
+
+**Source** : Fichier de la Publicité Foncière, STATEC - Observatoire de l’Habitat, AED (2010-2026).  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+### Marché de la vente de maisons
+
+Sur le segment de la vente de maisons, l’activité progresse légèrement par rapport au trimestre précédent, mais demeure nettement inférieure au niveau exceptionnel enregistré un an auparavant. Le nombre de transactions atteint **709 ventes** au 2^e^ trimestre 2026, soit une hausse de **+8.2%** par rapport au 1^er^ trimestre 2026, mais une baisse de **-35.8%** sur douze mois. Le volume financier correspondant s’élève à environ **632 millions d’EUR**, en progression de **+11.7%** sur le trimestre, mais en recul de **-40.0%** par rapport au 2^e^ trimestre 2025.
+
+Là encore, la comparaison avec le 2^e^ trimestre 2025 est fortement influencée par le pic d’activité enregistré à cette période. Entre 2017 et 2021, le nombre moyen de ventes de maisons au deuxième trimestre atteignait environ 909 transactions. Le niveau observé au 2^e^ trimestre 2026 reste donc inférieur d’environ 22% à cette moyenne. Le marché des maisons apparaît ainsi encore en retrait par rapport aux standards d’avant-crise, même si l’activité est nettement supérieure aux niveaux particulièrement faibles observés en 2023 et au début de l’année 2024.
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 3 : Nombre de ventes de maisons et volumes financiers correspondants
+**Description** : Évolution trimestrielle de 2010 à 2026 :
+- *Axe de gauche (barres)* : Nombre d'actes de vente de maisons existantes.
+- *Axe de droite (courbe)* : Volume financier des ventes de maisons (en millions €).
+
+**Source** : Fichier de la Publicité Foncière, STATEC - Observatoire de l’Habitat, AED (2010-2026).  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+### Marché des terrains à bâtir
+
+L’activité sur le marché des terrains à bâtir reste relativement modérée. Le nombre de transactions atteint **333 ventes** au 2^e^ trimestre 2026. Cela correspond à une progression de **+20.2%** par rapport au trimestre précédent, mais à un recul de **-21.1%** par rapport au 2^e^ trimestre 2025.
+
+Le volume financier associé à ces ventes atteint environ **202 millions d’EUR**. Il progresse de **+16.5%** sur le trimestre, mais diminue de **-45.7%** sur douze mois. Le recul du volume financier est donc nettement plus marqué que celui du nombre de transactions sur un an.
+
+Le niveau d’activité reste par ailleurs sensiblement inférieur aux standards observés avant la crise. Entre 2017 et 2021, le nombre moyen de ventes de terrains à bâtir au deuxième trimestre atteignait environ 528 transactions. Le niveau enregistré au 2^e^ trimestre 2026 est ainsi inférieur de près de 37% à cette moyenne.
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 4 : Nombre de ventes de terrains à bâtir et volumes financiers correspondants
+**Description** : Évolution trimestrielle de 2010 à 2026 :
+- *Axe de gauche (barres)* : Nombre d'actes de vente de terrains à bâtir.
+- *Axe de droite (courbe)* : Volume financier des ventes de terrains à bâtir (en millions €).
+
+**Source** : Fichier de la Publicité Foncière, STATEC - Observatoire de l’Habitat, AED (2010-2026).  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+---
+
+## 3. Tableau de bord des prix des appartements et des maisons
+
+Le prix de vente par m² dépend principalement du type d’appartement, de sa surface ainsi que de sa localisation. En moyenne, un appartement en construction est de **23% à 29% plus cher** qu’un objet existant d’une surface comparable. Ensuite, le prix par m² diminue avec la surface du logement. Enfin, les prix des appartements diminuent assez nettement en s’éloignant de la capitale.
+
+La localisation est également un facteur explicatif déterminant des prix des maisons existantes. Dans le canton de Luxembourg, le prix moyen d’une maison s’élève ainsi à **1 370 000 EUR** environ, **88% plus élevé** que le prix moyen dans le nord du pays. Pour les maisons, les prix médians par région sont inférieurs aux prix moyens par zone géographique, ce qui indique une forte asymétrie dans la distribution des prix de vente.
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 5 : Les prix de vente par m² des appartements ont tendance à décroître avec la surface du logement
+**Description** : Prix moyen par m² (en €/m²) selon la tranche de surface (transactions du 1^er^ juillet 2025 au 30 juin 2026) :
+- *Tranches de surface* : Moins de 50 m², De 50 à 69 m², De 70 à 89 m², De 90 à 109 m², De 110 à 129 m², 130 m² et plus, TOTAL.
+- *Comparaison* : Appartements existants (de 9 435 €/m² pour <50m² à 6 441 €/m² pour ≥130m², moyenne 7 712 €/m²) vs Appartements en construction (de 11 573 €/m² à 8 063 €/m², moyenne 9 839 €/m²).
+
+**Source** : Publicité Foncière, Calcul STATEC – Observatoire de l’Habitat.  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 6 : Les prix de vente par m² des appartements sont fortement influencés par la distance vis-à-vis de Luxembourg-Ville
+**Description** : Prix de vente moyen par m² (en €/m²) par zone géographique (transactions du 1^er^ juillet 2025 au 30 juin 2026) :
+- *Zones* : Canton de Luxembourg (existant : 9 811 €/m² ; neuf : 11 795 €/m²), Capellen-Mersch (7 376 vs 8 697), Canton d'Esch-sur-Alzette (6 835 vs 8 707), Est (6 833 vs 8 448), Nord (6 079 vs 7 735), TOTAL pays (7 712 vs 9 839).
+- *Comparaison* : Appartements existants vs Appartements en construction.
+
+**Source** : Publicité Foncière, Calcul STATEC – Observatoire de l’Habitat.  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 7 : Les prix de vente des maisons sont également fortement influencés par la distance vis-à-vis de la capitale
+**Description** : Comparaison du Prix moyen (€) et du Prix médian (€) des maisons existantes par zone géographique (transactions du 1^er^ juillet 2025 au 30 juin 2026) :
+- *Canton de Luxembourg* : Moyen 1 372 796 € | Médian 1 300 000 €
+- *Capellen-Mersch* : Moyen 1 038 558 € | Médian 1 005 000 €
+- *Est* : Moyen 882 472 € | Médian 842 500 €
+- *Canton d'Esch-sur-Alzette* : Moyen 803 815 € | Médian 740 000 €
+- *Nord* : Moyen 729 993 € | Médian 686 000 €
+- *TOTAL pays* : Moyen 945 274 € | Médian 870 000 €
+
+**Source** : Publicité Foncière, Calcul STATEC – Observatoire de l’Habitat.  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+---
+
+## 4. Prix de vente des appartements par commune
+
+::: {.callout-tip icon=false}
+### 🗺️ Carte 1 : Prix de vente moyen par m² des appartements existants par commune
+**Description** : Carte choroplèthe communale du Luxembourg (transactions d'appartements existants du 1^er^ juillet 2025 au 30 juin 2026, seuil minimum de 5 ventes).
+- *Classes de prix* : Moins de 6 000 €/m², De 6 000 à 6 999 €/m², De 7 000 à 7 999 €/m², De 8 000 à 8 999 €/m², De 9 000 à 9 999 €/m², 10 000 €/m² ou plus.
+- *Moyenne nationale* : 7 712 €/m².
+
+**Auteur** : Observatoire de l’Habitat, LISER (Septembre 2026). Données : Publicité Foncière.  
+*(Carte interactive Observable JS à insérer ici)*
+:::
+
+::: {.callout-tip icon=false}
+### 🗺️ Carte 2 : Prix de vente moyen par m² des appartements en construction (VEFA) par commune
+**Description** : Carte choroplèthe communale du Luxembourg (transactions d'appartements en construction du 1^er^ juillet 2025 au 30 juin 2026, seuil minimum de 5 ventes).
+- *Classes de prix* : Moins de 8 000 €/m², De 8 000 à 8 999 €/m², De 9 000 à 9 999 €/m², De 10 000 à 10 999 €/m², De 11 000 à 11 999 €/m², 12 000 €/m² ou plus.
+- *Moyenne nationale* : 9 839 €/m².
+
+**Auteur** : Observatoire de l’Habitat, LISER (Septembre 2026). Données : Publicité Foncière.  
+*(Carte interactive Observable JS à insérer ici)*
+:::
+
+---
+
+## 5. Focus sur… Les évolutions récentes des loyers annoncés
+
+Les indicateurs de loyers annoncés de l’Observatoire de l’Habitat sont calculés à partir des annonces immobilières et visent à mesurer l’évolution des loyers demandés pour de nouveaux contrats de location, en limitant les effets liés aux changements dans la composition des biens proposés. Ils proviennent depuis 2013 du portail immobilier IMMOTOP.LU dans le cadre d’une collaboration avec le Ministère du Logement. Ils ne mesurent donc pas le niveau des loyers effectivement payés par l’ensemble des locataires.
+
+Au 2^e^ trimestre 2026, les loyers annoncés des appartements augmentent de **+0.6%** par rapport au trimestre précédent et de **+5.8% sur un an**. Cette progression est nettement supérieure à l’inflation générale, qui atteint 2.4% sur la même période. Après une période de relative stabilisation en 2024 et au début de 2025, les loyers annoncés des appartements connaissent ainsi une nouvelle accélération.
+
+Cette évolution contraste avec celle des loyers en cours de bail. Entre le 2^e^ trimestre 2025 et le 2^e^ trimestre 2026, l’indice des loyers en cours de bail produit par le STATEC progresse de **+1.3%**, soit une hausse beaucoup plus proche de l’évolution générale des prix. L’écart entre les deux indicateurs illustre la différence entre les conditions locatives des contrats existants et celles proposées lors de la relocation d’un logement. Les premiers évoluent de manière progressive, tandis que les seconds réagissent davantage aux conditions observées sur le marché des nouveaux contrats.
+
+Les loyers annoncés des maisons suivent une trajectoire différente. Ils augmentent de **+1.3%** sur le trimestre au 2^e^ trimestre 2026, mais restent en baisse de **-3.1% sur un an**. Cet indicateur est toutefois plus volatil que celui des appartements, en raison du nombre relativement limité d’annonces de maisons à louer. Les variations de la composition des biens proposés peuvent ainsi avoir une influence importante sur les évolutions à court terme. Les loyers annoncés des appartements constituent dès lors l’indicateur le plus robuste pour apprécier la dynamique récente du marché locatif.
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 8 : Indicateurs des loyers annoncés des appartements et des maisons depuis 2010
+**Description** : Évolution trimestrielle (2010 T1 à 2026 T2, Base 100 = 1^er^ trim. 2010) des indices des loyers annoncés pour :
+- *Loyers annoncés des appartements*
+- *Loyers annoncés des maisons*
+
+**Source** : Ministère du Logement – Observatoire de l’Habitat (base Prix annoncés 2010-2026), IMMOTOP.LU.  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+Cette progression des loyers annoncés apparaît particulièrement notable lorsqu’elle est mise en regard de l’évolution des prix de vente. Sur une longue période, les deux marchés ont connu des évolutions très différentes. Les prix des logements ont fortement augmenté au cours des années 2010, alors que les loyers annoncés ont progressé de manière plus régulière. Depuis 2020, les trajectoires se sont toutefois encore davantage séparées.
+
+Les prix de vente ont fortement accéléré jusqu’en 2022 avant d’enregistrer une correction marquée en 2023 et 2024. Après avoir atteint un point haut au 3^e^ trimestre 2022, les prix des logements ont ainsi reculé de manière importante jusqu’au début de 2024. Depuis, ils se sont globalement stabilisés. Les loyers annoncés n’ont, en revanche, pas connu de correction comparable. Après une nouvelle progression en 2022 et 2023, ils ont surtout marqué une pause en 2024 et au début de 2025, avant de repartir à la hausse. Cette divergence récente rappelle que les marchés de la vente et de la location, bien qu’étroitement liés, ne réagissent pas nécessairement de la même manière aux évolutions économiques et financières.
+
+Le retournement du marché de la vente s’est notamment produit dans un contexte de forte hausse des taux d’intérêt, qui a pesé sur la capacité d’emprunt des ménages. Une partie de la demande qui ne pouvait plus accéder à la propriété a pu se reporter vers le marché locatif, dans un contexte où l’offre locative reste relativement limitée. Cette évolution contribue à expliquer pourquoi la baisse des prix de vente ne s’est pas accompagnée d’une baisse comparable des loyers annoncés.
+
+### Éclairage sur les chambres meublées
+
+Un dernier éclairage est apporté par les chambres meublées, dont l’importance dans l’offre locative a fortement augmenté au cours des dernières années. Alors qu’elles représentaient moins de 3% de l’offre locative au début des années 2010, elles en représentent désormais environ **14%**. Ce segment reste toutefois fortement concentré dans la Ville de Luxembourg et dans le sud du pays.
+
+L’indicateur spécifique développé par l’Observatoire de l’Habitat permet de suivre l’évolution des loyers demandés pour ces chambres en limitant, comme pour les autres indicateurs, les effets liés à la composition de l’offre. Les loyers annoncés des chambres meublées ont progressé plus rapidement que ceux des logements traditionnels sur l’ensemble de la période récente. Entre 2010 et 2025, l’indice a ainsi augmenté de **+102.6%**, contre **+83.0%** pour les appartements et **+76.9%** pour les maisons. Cette progression a été particulièrement marquée en 2022 et 2023, avant de ralentir en 2024 et 2025. Au 2^e^ trimestre 2026, les loyers annoncés des chambres meublées augmentent néanmoins encore de **+4.9% sur un an**, soit un rythme proche de celui observé pour les appartements.
+
+La comparaison des niveaux de loyers entre chambres meublées et logements traditionnels doit toutefois être interprétée avec prudence. Une chambre meublée donne généralement accès à des espaces communs et inclut la fourniture de mobilier, tandis que la surface indiquée correspond principalement à l’espace privatif. En outre, les loyers au m² sont généralement plus élevés pour les petites surfaces. L’indicateur est donc surtout pertinent pour comparer les évolutions dans le temps.
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 9 : Évolution des indicateurs des loyers annoncés et du nouvel indicateur des loyers des chambres meublées
+**Description** : Évolution annuelle de 2010 à 2025 (Base 100 = 2010) des loyers annoncés pour :
+- *Loyers annoncés des chambres meublées* (+102.6%)
+- *Loyers annoncés des appartements* (+83.0%)
+- *Loyers annoncés des maisons* (+76.9%)
+
+**Source** : Observatoire de l’Habitat, IMMOTOP.LU.  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+---
+
+## 6. Focus sur… Un indice des prix des logements régional
+
+Les pays européens sont confrontés à une crise du logement : un Européen sur dix est incapable de payer son loyer ou son crédit hypothécaire à temps. Les appartements situés dans les centres-villes deviennent de plus en plus inabordables, les loyers ayant augmenté de manière constante depuis 2010. Afin de répondre à ce problème, la Commission européenne a créé le [Plan européen pour un logement abordable](https://housing.ec.europa.eu/european-affordable-housing-plan_en) (*European Affordable Housing Plan*), présenté en décembre 2025.
+
+Les 4 piliers du plan sont les suivants :
+
+1. **Augmenter l’offre de logements**
+2. **Mobiliser davantage d’investissements**
+3. **Soutenir les réformes et les actions immédiates**
+4. **Protéger les groupes les plus touchés**
+
+Dans le cadre de l’action 8, la Commission encouragera la production et l’amélioration des statistiques européennes sur le logement. Eurostat cherche ainsi à combler certaines lacunes statistiques en demandant notamment aux instituts nationaux de statistique, dont le STATEC, de fournir des données régionales sur les indices des prix des logements ainsi que des informations complémentaires sur les loyers au niveau régional.
+
+Afin de référencer les régions des pays à des fins statistiques, l’Union européenne a développé une classification appelée **NUTS** (Nomenclature des unités territoriales statistiques) divisant chaque pays en trois niveaux (NUTS 1, NUTS 2, NUTS 3). Le Luxembourg n’étant pas subdivisé selon la classification NUTS, il est toutefois possible de produire des indices des prix des logements à d’autres niveaux géographiques, notamment un indice pour la région de la capitale regroupant la **Ville de Luxembourg, Hesperange, Bertrange, Strassen et Walferdange**. Cet ensemble correspond à la notion de *greater city* définie au niveau européen.
+
+### Appartements existants : Région de Luxembourg vs Reste du pays
+
+L’indice des appartements existants a augmenté de **+73.5%** au niveau national entre le premier trimestre 2015 et le deuxième trimestre 2026. Sur la même période, l’indice de la région de Luxembourg progresse de **+70.8%**, contre **+73.7%** pour le reste du pays. Ces évolutions indiquent qu’à long terme, la dynamique des prix des appartements existants est globalement comparable entre les deux zones.
+
+Cette convergence à l’échelle de l’ensemble de la période masque toutefois des différences plus marquées à court terme. Entre 2018 et 2020, les prix des appartements existants ont progressé plus rapidement dans la région de Luxembourg que dans le reste du pays. Au cours de cette période, l’écart moyen entre les deux indices atteint 15 points d’indice. À partir de 2024, les trajectoires se rapprochent progressivement et les indices convergent à nouveau.
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 10 : L'indice des prix des appartements existants pour la région de Luxembourg a augmenté plus rapidement entre 2018 et 2020
+**Description** : Appartements existants de 2015 Q1 à 2026 Q2 :
+- *Axe de gauche (Indice des prix, base 100 en 2015 Q1)* : Courbes d'indice pour la région de Luxembourg vs le Reste du pays.
+- *Axe de droite (barres)* : Nombre de transactions pour la région de Luxembourg vs le Reste du pays.
+
+**Source** : Fichier de la Publicité Foncière, STATEC, AED (2015-2026).  
+*Remarque : la région de Luxembourg regroupe Luxembourg-Ville, Hesperange, Bertrange, Strassen et Walferdange.*  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+### Appartements en construction (VEFA) : Région de Luxembourg vs Reste du pays
+
+La situation est sensiblement différente pour les appartements vendus en état futur d’achèvement (VEFA). Au niveau national, l’indice des prix augmente de **+91.4%** entre le premier trimestre 2015 et le deuxième trimestre 2026. Cette progression est largement portée par la région de Luxembourg, où l’indice enregistre une hausse de **+113.2%** sur la période. Dans le reste du pays, l’augmentation est nettement plus modérée et atteint **+74.2%**.
+
+L’interprétation de ces résultats doit néanmoins être effectuée avec prudence. Depuis 2023, le marché des logements neufs connaît un net recul du nombre de transactions. La faiblesse des volumes observés entraîne une plus grande volatilité des indices, particulièrement pour la région de Luxembourg où le nombre d’observations est plus limité.
+
+::: {.callout-tip icon=false}
+### 📊 Graphique 11 : L'indice des prix des appartements VEFA est plus volatil depuis 2023 à la suite du recul du nombre de transactions
+**Description** : Appartements en construction (VEFA) de 2015 Q1 à 2026 Q2 :
+- *Axe de gauche (Indice des prix, base 100 en 2015 Q1)* : Courbes d'indice pour la région de Luxembourg vs le Reste du pays.
+- *Axe de droite (barres)* : Nombre de transactions pour la région de Luxembourg vs le Reste du pays.
+
+**Source** : Fichier de la Publicité Foncière, STATEC, AED (2015-2026).  
+*Remarque : la région de Luxembourg regroupe Luxembourg-Ville, Hesperange, Bertrange, Strassen et Walferdange.*  
+*(Graphique interactif Observable JS à insérer ici)*
+:::
+
+Dans l’ensemble, les résultats suggèrent que les écarts territoriaux sont davantage marqués sur le marché du neuf que sur celui de l’existant. Alors que les prix des appartements existants présentent des évolutions relativement similaires entre la région de Luxembourg et le reste du pays sur le long terme, les appartements VEFA affichent une croissance beaucoup plus forte dans la région de la capitale. Cette différence pourrait refléter une pression plus importante sur le foncier constructible dans les communes les plus attractives du pays ainsi qu’une concentration des nouveaux projets résidentiels dans des zones où la demande reste structurellement élevée.
+
+Ces indices régionaux illustrent l’intérêt de disposer d’indicateurs territorialisés afin de mieux comprendre l’hétérogénéité des marchés immobiliers luxembourgeois, une orientation qui s’inscrit dans les travaux actuellement encouragés au niveau européen en matière de statistiques du logement.

@@ -1,0 +1,14 @@
+# Quarto
+.quarto/
+*_files/
+index.html
+public/
+
+# R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# General
+.DS_Store
