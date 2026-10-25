@@ -80,6 +80,72 @@ g7_df <- read.csv("data/prix_maisons_regions.csv") %>%
   pivot_longer(cols = c(prix_moyen, prix_median), names_to = "statistique", values_to = "prix") %>%
   mutate(statistique = ifelse(statistique == "prix_moyen", "Prix moyen", "Prix médian"))
 ojs_define(g7_raw = g7_df)
+
+# Data for Graphique 3 (Maisons)
+tx_maisons <- read.csv("data/ventes_maisons_trimestriel.csv") %>%
+  filter(annee >= 2010) %>%
+  mutate(
+    trim_num = as.integer(substr(trimestre, 2, 2)),
+    month = sprintf("%02d", (trim_num - 1) * 3 + 1),
+    date = paste0(annee, "-", month, "-01"),
+    periode = paste0(annee, " ", trimestre)
+  )
+ojs_define(g3_raw = tx_maisons)
+
+# Data for Graphique 4 (Terrains à bâtir)
+tx_terrains <- read.csv("data/ventes_terrains_trimestriel.csv") %>%
+  filter(annee >= 2010) %>%
+  mutate(
+    trim_num = as.integer(substr(trimestre, 2, 2)),
+    month = sprintf("%02d", (trim_num - 1) * 3 + 1),
+    date = paste0(annee, "-", month, "-01"),
+    periode = paste0(annee, " ", trimestre)
+  )
+ojs_define(g4_raw = tx_terrains)
+
+# Data for Cartes 1 & 2 (Communes)
+prix_communes <- read.csv("data/prix_communes_appartements.csv")
+ojs_define(communes_prix_raw = prix_communes)
+ojs_define(communes_geo = jsonlite::read_json("data/communes_luxembourg.geojson"))
+
+# Data for Graphique 8 (Loyers trimestriels)
+loyers_trim <- read.csv("data/loyers_annonces_trimestriel.csv") %>%
+  filter(annee >= 2010) %>%
+  mutate(
+    trim_num = as.integer(substr(trimestre, 2, 2)),
+    month = sprintf("%02d", (trim_num - 1) * 3 + 1),
+    date = paste0(annee, "-", month, "-01"),
+    periode = paste0(annee, " ", trimestre),
+    base_appart = indice_loyer_appartement[annee == 2010 & trimestre == "T1"],
+    base_maison = indice_loyer_maison[annee == 2010 & trimestre == "T1"],
+    loyer_appart_idx = round(indice_loyer_appartement / base_appart * 100, 1),
+    loyer_maison_idx = round(indice_loyer_maison / base_maison * 100, 1)
+  )
+ojs_define(loyers_raw = loyers_trim)
+
+# Data for Graphique 9 (Loyers annuels & chambres meublées)
+g9_df <- read.csv("data/loyers_chambres_meublees_annuel.csv") %>%
+  pivot_longer(
+    cols = c(loyer_appartements_idx, loyer_maisons_idx, loyer_chambres_meublees_idx),
+    names_to = "serie_code",
+    values_to = "indice"
+  ) %>%
+  mutate(
+    serie = case_when(
+      serie_code == "loyer_appartements_idx" ~ "Loyers annoncés des appartements",
+      serie_code == "loyer_maisons_idx" ~ "Loyers annoncés des maisons",
+      serie_code == "loyer_chambres_meublees_idx" ~ "Loyers annoncés des chambres meublées"
+    )
+  )
+ojs_define(g9_raw = g9_df)
+
+# Data for Graphique 10 (Appartements existants - Régional)
+g10_df <- read.csv("data/focus_regional_appartements_existants.csv")
+ojs_define(g10_raw = g10_df)
+
+# Data for Graphique 11 (Appartements VEFA - Régional)
+g11_df <- read.csv("data/focus_regional_appartements_vefa.csv")
+ojs_define(g11_raw = g11_df)
 ```
 
 ::: {.callout-note appearance="minimal"}
@@ -405,15 +471,110 @@ Sur le segment de la vente de maisons, l’activité progresse légèrement par 
 
 Là encore, la comparaison avec le 2^e^ trimestre 2025 est fortement influencée par le pic d’activité enregistré à cette période. Entre 2017 et 2021, le nombre moyen de ventes de maisons au deuxième trimestre atteignait environ 909 transactions. Le niveau observé au 2^e^ trimestre 2026 reste donc inférieur d’environ 22% à cette moyenne. Le marché des maisons apparaît ainsi encore en retrait par rapport aux standards d’avant-crise, même si l’activité est nettement supérieure aux niveaux particulièrement faibles observés en 2023 et au début de l’année 2024.
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 3 : Nombre de ventes de maisons et volumes financiers correspondants
-**Description** : Évolution trimestrielle de 2010 à 2026 :
-- *Axe de gauche (barres)* : Nombre d'actes de vente de maisons existantes.
-- *Axe de droite (courbe)* : Volume financier des ventes de maisons (en millions €).
+### Graphique 3 : Nombre de ventes de maisons et volumes financiers correspondants
 
-**Source** : Fichier de la Publicité Foncière, STATEC - Observatoire de l’Habitat, AED (2010-2026).  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+```{ojs}
+//| echo: false
+g3_data = transpose(g3_raw).map(d => ({
+  ...d,
+  date: new Date(d.date)
+}))
+
+viewof g3_view = Inputs.radio(
+  ["Vue combinée (ventes & volume)", "Nombre de ventes seulement", "Volume financier seulement"],
+  {
+    value: "Vue combinée (ventes & volume)",
+    label: "Affichage :"
+  }
+)
+
+chart_g3_sales = Plot.plot({
+  title: "Nombre de ventes de maisons par trimestre",
+  subtitle: "Transactions notariées enregistrées (2010 T1 à 2026 T2)",
+  width: width,
+  height: g3_view === "Vue combinée (ventes & volume)" ? 260 : 380,
+  marginTop: 35,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Nombre d'actes"
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  marks: [
+    Plot.rectY(g3_data, {
+      x: "date",
+      y: "nb_actes",
+      fill: "#2563eb",
+      interval: d3.timeMonth.every(3),
+      inset: 0.5
+    }),
+    Plot.tip(
+      g3_data,
+      Plot.pointerX({
+        x: "date",
+        y: "nb_actes",
+        title: d => `${d.periode}\nVentes : ${d.nb_actes}\nVolume : ${d.volume_mio_eur} M€`
+      })
+    )
+  ]
+})
+
+chart_g3_vol = Plot.plot({
+  title: "Volume financier des ventes de maisons",
+  subtitle: "En millions d'EUR (2010 T1 à 2026 T2)",
+  width: width,
+  height: g3_view === "Vue combinée (ventes & volume)" ? 220 : 380,
+  marginTop: 30,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Volume (millions €)"
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  marks: [
+    Plot.areaY(g3_data, {
+      x: "date",
+      y: "volume_mio_eur",
+      fill: "#3b82f6",
+      fillOpacity: 0.25,
+      curve: "catmull-rom"
+    }),
+    Plot.lineY(g3_data, {
+      x: "date",
+      y: "volume_mio_eur",
+      stroke: "#1d4ed8",
+      strokeWidth: 2.2,
+      curve: "catmull-rom"
+    }),
+    Plot.dot(g3_data, {
+      x: "date",
+      y: "volume_mio_eur",
+      stroke: "#1d4ed8",
+      fill: "#ffffff",
+      r: 3
+    }),
+    Plot.tip(
+      g3_data,
+      Plot.pointerX({
+        x: "date",
+        y: "volume_mio_eur",
+        title: d => `${d.periode}\nVolume : ${d.volume_mio_eur} M€\nVentes : ${d.nb_actes}`
+      })
+    )
+  ]
+})
+
+html`<div>
+  ${g3_view !== "Volume financier seulement" ? chart_g3_sales : ""}
+  ${g3_view !== "Nombre de ventes seulement" ? chart_g3_vol : ""}
+</div>`
+```
 
 ### Marché des terrains à bâtir
 
@@ -423,15 +584,110 @@ Le volume financier associé à ces ventes atteint environ **202 millions d’EU
 
 Le niveau d’activité reste par ailleurs sensiblement inférieur aux standards observés avant la crise. Entre 2017 et 2021, le nombre moyen de ventes de terrains à bâtir au deuxième trimestre atteignait environ 528 transactions. Le niveau enregistré au 2^e^ trimestre 2026 est ainsi inférieur de près de 37% à cette moyenne.
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 4 : Nombre de ventes de terrains à bâtir et volumes financiers correspondants
-**Description** : Évolution trimestrielle de 2010 à 2026 :
-- *Axe de gauche (barres)* : Nombre d'actes de vente de terrains à bâtir.
-- *Axe de droite (courbe)* : Volume financier des ventes de terrains à bâtir (en millions €).
+### Graphique 4 : Nombre de ventes de terrains à bâtir et volumes financiers correspondants
 
-**Source** : Fichier de la Publicité Foncière, STATEC - Observatoire de l’Habitat, AED (2010-2026).  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+```{ojs}
+//| echo: false
+g4_data = transpose(g4_raw).map(d => ({
+  ...d,
+  date: new Date(d.date)
+}))
+
+viewof g4_view = Inputs.radio(
+  ["Vue combinée (ventes & volume)", "Nombre de ventes seulement", "Volume financier seulement"],
+  {
+    value: "Vue combinée (ventes & volume)",
+    label: "Affichage :"
+  }
+)
+
+chart_g4_sales = Plot.plot({
+  title: "Nombre de ventes de terrains à bâtir par trimestre",
+  subtitle: "Transactions notariées enregistrées (2010 T1 à 2026 T2)",
+  width: width,
+  height: g4_view === "Vue combinée (ventes & volume)" ? 260 : 380,
+  marginTop: 35,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Nombre d'actes"
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  marks: [
+    Plot.rectY(g4_data, {
+      x: "date",
+      y: "nb_actes",
+      fill: "#d97706",
+      interval: d3.timeMonth.every(3),
+      inset: 0.5
+    }),
+    Plot.tip(
+      g4_data,
+      Plot.pointerX({
+        x: "date",
+        y: "nb_actes",
+        title: d => `${d.periode}\nVentes : ${d.nb_actes}\nVolume : ${d.volume_mio_eur} M€`
+      })
+    )
+  ]
+})
+
+chart_g4_vol = Plot.plot({
+  title: "Volume financier des ventes de terrains à bâtir",
+  subtitle: "En millions d'EUR (2010 T1 à 2026 T2)",
+  width: width,
+  height: g4_view === "Vue combinée (ventes & volume)" ? 220 : 380,
+  marginTop: 30,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Volume (millions €)"
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  marks: [
+    Plot.areaY(g4_data, {
+      x: "date",
+      y: "volume_mio_eur",
+      fill: "#f59e0b",
+      fillOpacity: 0.25,
+      curve: "catmull-rom"
+    }),
+    Plot.lineY(g4_data, {
+      x: "date",
+      y: "volume_mio_eur",
+      stroke: "#b45309",
+      strokeWidth: 2.2,
+      curve: "catmull-rom"
+    }),
+    Plot.dot(g4_data, {
+      x: "date",
+      y: "volume_mio_eur",
+      stroke: "#b45309",
+      fill: "#ffffff",
+      r: 3
+    }),
+    Plot.tip(
+      g4_data,
+      Plot.pointerX({
+        x: "date",
+        y: "volume_mio_eur",
+        title: d => `${d.periode}\nVolume : ${d.volume_mio_eur} M€\nVentes : ${d.nb_actes}`
+      })
+    )
+  ]
+})
+
+html`<div>
+  ${g4_view !== "Volume financier seulement" ? chart_g4_sales : ""}
+  ${g4_view !== "Nombre de ventes seulement" ? chart_g4_vol : ""}
+</div>`
+```
 
 ---
 
@@ -626,25 +882,125 @@ Plot.plot({
 
 ## 4. Prix de vente des appartements par commune
 
-::: {.callout-tip icon=false}
-### 🗺️ Carte 1 : Prix de vente moyen par m² des appartements existants par commune
-**Description** : Carte choroplèthe communale du Luxembourg (transactions d'appartements existants du 1^er^ juillet 2025 au 30 juin 2026, seuil minimum de 5 ventes).
-- *Classes de prix* : Moins de 6 000 €/m², De 6 000 à 6 999 €/m², De 7 000 à 7 999 €/m², De 8 000 à 8 999 €/m², De 9 000 à 9 999 €/m², 10 000 €/m² ou plus.
-- *Moyenne nationale* : 7 712 €/m².
+```{ojs}
+//| echo: false
+communes_dict = new Map(transpose(communes_prix_raw).map(d => [d.commune, d]))
 
-**Auteur** : Observatoire de l’Habitat, LISER (Septembre 2026). Données : Publicité Foncière.  
-*(Carte interactive Observable JS à insérer ici)*
-:::
+geo_communes = ({
+  type: "FeatureCollection",
+  features: communes_geo.features.map(f => {
+    const p = communes_dict.get(f.properties.COMMUNE) || {};
+    return {
+      type: "Feature",
+      geometry: f.geometry,
+      properties: {
+        commune: f.properties.COMMUNE,
+        canton: f.properties.CANTON,
+        nb_existant: p.nb_ventes_existant != null ? p.nb_ventes_existant : null,
+        prix_existant: p.prix_m2_existant != null ? Math.round(p.prix_m2_existant) : null,
+        fourchette_existant: p.fourchette_existant || "*",
+        nb_neuf: p.nb_ventes_neuf != null ? p.nb_ventes_neuf : null,
+        prix_neuf: p.prix_m2_neuf != null ? Math.round(p.prix_m2_neuf) : null,
+        fourchette_neuf: p.fourchette_neuf || "*",
+        cat_existant: !p.prix_m2_existant ? "Données insuffisantes (< 5 ventes)" :
+          p.prix_m2_existant < 6000 ? "Moins de 6 000 €/m²" :
+          p.prix_m2_existant < 7000 ? "6 000 à 6 999 €/m²" :
+          p.prix_m2_existant < 8000 ? "7 000 à 7 999 €/m²" :
+          p.prix_m2_existant < 9000 ? "8 000 à 8 999 €/m²" :
+          p.prix_m2_existant < 10000 ? "9 000 à 9 999 €/m²" : "10 000 €/m² et plus",
+        cat_neuf: !p.prix_m2_neuf ? "Données insuffisantes (< 5 ventes)" :
+          p.prix_m2_neuf < 8000 ? "Moins de 8 000 €/m²" :
+          p.prix_m2_neuf < 9000 ? "8 000 à 8 999 €/m²" :
+          p.prix_m2_neuf < 10000 ? "9 000 à 9 999 €/m²" :
+          p.prix_m2_neuf < 11000 ? "10 000 à 10 999 €/m²" :
+          p.prix_m2_neuf < 12000 ? "11 000 à 11 999 €/m²" : "12 000 €/m² et plus"
+      }
+    };
+  })
+})
 
-::: {.callout-tip icon=false}
-### 🗺️ Carte 2 : Prix de vente moyen par m² des appartements en construction (VEFA) par commune
-**Description** : Carte choroplèthe communale du Luxembourg (transactions d'appartements en construction du 1^er^ juillet 2025 au 30 juin 2026, seuil minimum de 5 ventes).
-- *Classes de prix* : Moins de 8 000 €/m², De 8 000 à 8 999 €/m², De 9 000 à 9 999 €/m², De 10 000 à 10 999 €/m², De 11 000 à 11 999 €/m², 12 000 €/m² ou plus.
-- *Moyenne nationale* : 9 839 €/m².
+viewof map_segment = Inputs.radio(
+  ["Appartements existants (Carte 1)", "Appartements en construction / VEFA (Carte 2)"],
+  {
+    value: "Appartements existants (Carte 1)",
+    label: "Segment affiché :"
+  }
+)
 
-**Auteur** : Observatoire de l’Habitat, LISER (Septembre 2026). Données : Publicité Foncière.  
-*(Carte interactive Observable JS à insérer ici)*
-:::
+is_existant = map_segment === "Appartements existants (Carte 1)"
+
+categories_existant = [
+  "Moins de 6 000 €/m²",
+  "6 000 à 6 999 €/m²",
+  "7 000 à 7 999 €/m²",
+  "8 000 à 8 999 €/m²",
+  "9 000 à 9 999 €/m²",
+  "10 000 €/m² et plus",
+  "Données insuffisantes (< 5 ventes)"
+]
+
+colors_existant = [
+  "#dbeafe",
+  "#93c5fd",
+  "#60a5fa",
+  "#2563eb",
+  "#1d4ed8",
+  "#1e3a8a",
+  "#e2e8f0"
+]
+
+categories_neuf = [
+  "Moins de 8 000 €/m²",
+  "8 000 à 8 999 €/m²",
+  "9 000 à 9 999 €/m²",
+  "10 000 à 10 999 €/m²",
+  "11 000 à 11 999 €/m²",
+  "12 000 €/m² et plus",
+  "Données insuffisantes (< 5 ventes)"
+]
+
+colors_neuf = [
+  "#fef3c7",
+  "#fde68a",
+  "#f59e0b",
+  "#d97706",
+  "#b45309",
+  "#78350f",
+  "#e2e8f0"
+]
+
+chart_map = Plot.plot({
+  title: is_existant 
+    ? "Carte 1 : Prix de vente moyen par m² des appartements existants par commune" 
+    : "Carte 2 : Prix de vente moyen par m² des appartements en construction (VEFA) par commune",
+  subtitle: is_existant
+    ? "Transactions notariées du 1er juillet 2025 au 30 juin 2026 — Moyenne nationale : 7 712 €/m²"
+    : "Transactions notariées du 1er juillet 2025 au 30 juin 2026 — Moyenne nationale : 9 839 €/m²",
+  width: width,
+  height: 560,
+  projection: {
+    type: "mercator",
+    domain: geo_communes
+  },
+  color: {
+    type: "ordinal",
+    domain: is_existant ? categories_existant : categories_neuf,
+    range: is_existant ? colors_existant : colors_neuf,
+    legend: true
+  },
+  marks: [
+    Plot.geo(geo_communes, {
+      fill: d => is_existant ? d.properties.cat_existant : d.properties.cat_neuf,
+      stroke: "#64748b",
+      strokeWidth: 0.5,
+      tip: true,
+      title: d => is_existant
+        ? `${d.properties.commune} (${d.properties.canton})\nPrix moyen : ${d.properties.prix_existant ? d.properties.prix_existant + ' €/m²' : 'Données insuffisantes (< 5 ventes)'}\nActes enregistrés : ${d.properties.nb_existant != null ? d.properties.nb_existant : 'N/A'}\nFourchette : ${d.properties.fourchette_existant}`
+        : `${d.properties.commune} (${d.properties.canton})\nPrix moyen : ${d.properties.prix_neuf ? d.properties.prix_neuf + ' €/m²' : 'Données insuffisantes (< 5 ventes)'}\nActes enregistrés : ${d.properties.nb_neuf != null ? d.properties.nb_neuf : 'N/A'}\nFourchette : ${d.properties.fourchette_neuf}`
+    })
+  ]
+})
+```
 
 ---
 
@@ -658,15 +1014,83 @@ Cette évolution contraste avec celle des loyers en cours de bail. Entre le 2^e^
 
 Les loyers annoncés des maisons suivent une trajectoire différente. Ils augmentent de **+1.3%** sur le trimestre au 2^e^ trimestre 2026, mais restent en baisse de **-3.1% sur un an**. Cet indicateur est toutefois plus volatil que celui des appartements, en raison du nombre relativement limité d’annonces de maisons à louer. Les variations de la composition des biens proposés peuvent ainsi avoir une influence importante sur les évolutions à court terme. Les loyers annoncés des appartements constituent dès lors l’indicateur le plus robuste pour apprécier la dynamique récente du marché locatif.
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 8 : Indicateurs des loyers annoncés des appartements et des maisons depuis 2010
-**Description** : Évolution trimestrielle (2010 T1 à 2026 T2, Base 100 = 1^er^ trim. 2010) des indices des loyers annoncés pour :
-- *Loyers annoncés des appartements*
-- *Loyers annoncés des maisons*
+### Graphique 8 : Indicateurs des loyers annoncés des appartements et des maisons depuis 2010
 
-**Source** : Ministère du Logement – Observatoire de l’Habitat (base Prix annoncés 2010-2026), IMMOTOP.LU.  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+```{ojs}
+//| echo: false
+g8_long = transpose(loyers_raw).flatMap(d => [
+  {
+    date: new Date(d.date),
+    periode: d.periode,
+    serie: "Loyers annoncés des appartements",
+    indice: d.loyer_appart_idx
+  },
+  {
+    date: new Date(d.date),
+    periode: d.periode,
+    serie: "Loyers annoncés des maisons",
+    indice: d.loyer_maison_idx
+  }
+])
+
+viewof g8_series = Inputs.checkbox(
+  ["Loyers annoncés des appartements", "Loyers annoncés des maisons"],
+  {
+    value: ["Loyers annoncés des appartements", "Loyers annoncés des maisons"],
+    label: "Séries affichées :"
+  }
+)
+
+g8_filtered = g8_long.filter(d => g8_series.includes(d.serie))
+
+chart_g8 = Plot.plot({
+  title: "Indicateurs des loyers annoncés des appartements et des maisons",
+  subtitle: "Série trimestrielle (2010 T1 à 2026 T2, Base 100 = 1er trim. 2010)",
+  width: width,
+  height: 420,
+  marginTop: 35,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Indice (Base 100 = 2010 T1)",
+    domain: [90, 210]
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  color: {
+    domain: ["Loyers annoncés des appartements", "Loyers annoncés des maisons"],
+    range: ["#2563eb", "#d97706"],
+    legend: true
+  },
+  marks: [
+    Plot.ruleY([100], { stroke: "#94a3b8", strokeDasharray: "3 3", strokeWidth: 1.2 }),
+    Plot.lineY(g8_filtered, {
+      x: "date",
+      y: "indice",
+      stroke: "serie",
+      strokeWidth: 2.5,
+      curve: "catmull-rom"
+    }),
+    Plot.dot(g8_filtered, {
+      x: "date",
+      y: "indice",
+      stroke: "serie",
+      fill: "#ffffff",
+      r: 3
+    }),
+    Plot.tip(
+      g8_filtered,
+      Plot.pointerX({
+        x: "date",
+        y: "indice",
+        title: d => `${d.periode}\n${d.serie} : ${d.indice}`
+      })
+    )
+  ]
+})
+```
 
 Cette progression des loyers annoncés apparaît particulièrement notable lorsqu’elle est mise en regard de l’évolution des prix de vente. Sur une longue période, les deux marchés ont connu des évolutions très différentes. Les prix des logements ont fortement augmenté au cours des années 2010, alors que les loyers annoncés ont progressé de manière plus régulière. Depuis 2020, les trajectoires se sont toutefois encore davantage séparées.
 
@@ -682,16 +1106,82 @@ L’indicateur spécifique développé par l’Observatoire de l’Habitat perme
 
 La comparaison des niveaux de loyers entre chambres meublées et logements traditionnels doit toutefois être interprétée avec prudence. Une chambre meublée donne généralement accès à des espaces communs et inclut la fourniture de mobilier, tandis que la surface indiquée correspond principalement à l’espace privatif. En outre, les loyers au m² sont généralement plus élevés pour les petites surfaces. L’indicateur est donc surtout pertinent pour comparer les évolutions dans le temps.
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 9 : Évolution des indicateurs des loyers annoncés et du nouvel indicateur des loyers des chambres meublées
-**Description** : Évolution annuelle de 2010 à 2025 (Base 100 = 2010) des loyers annoncés pour :
-- *Loyers annoncés des chambres meublées* (+102.6%)
-- *Loyers annoncés des appartements* (+83.0%)
-- *Loyers annoncés des maisons* (+76.9%)
+### Graphique 9 : Évolution des indicateurs des loyers annoncés et du nouvel indicateur des loyers des chambres meublées
 
-**Source** : Observatoire de l’Habitat, IMMOTOP.LU.  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+```{ojs}
+//| echo: false
+g9_data = transpose(g9_raw)
+
+viewof g9_series = Inputs.checkbox(
+  [
+    "Loyers annoncés des chambres meublées",
+    "Loyers annoncés des appartements",
+    "Loyers annoncés des maisons"
+  ],
+  {
+    value: [
+      "Loyers annoncés des chambres meublées",
+      "Loyers annoncés des appartements",
+      "Loyers annoncés des maisons"
+    ],
+    label: "Séries affichées :"
+  }
+)
+
+g9_filtered = g9_data.filter(d => g9_series.includes(d.serie))
+
+chart_g9 = Plot.plot({
+  title: "Évolution des loyers annoncés et des chambres meublées",
+  subtitle: "Série annuelle de 2010 à 2025 (Base 100 = 2010)",
+  width: width,
+  height: 420,
+  marginTop: 35,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Indice (Base 100 = 2010)",
+    domain: [90, 215]
+  },
+  x: {
+    label: null,
+    tickFormat: "d"
+  },
+  color: {
+    domain: [
+      "Loyers annoncés des chambres meublées",
+      "Loyers annoncés des appartements",
+      "Loyers annoncés des maisons"
+    ],
+    range: ["#0f766e", "#2563eb", "#b91c1c"],
+    legend: true
+  },
+  marks: [
+    Plot.ruleY([100], { stroke: "#94a3b8", strokeDasharray: "3 3", strokeWidth: 1.2 }),
+    Plot.lineY(g9_filtered, {
+      x: "annee",
+      y: "indice",
+      stroke: "serie",
+      strokeWidth: 2.5,
+      curve: "catmull-rom"
+    }),
+    Plot.dot(g9_filtered, {
+      x: "annee",
+      y: "indice",
+      stroke: "serie",
+      fill: "#ffffff",
+      r: 3.5
+    }),
+    Plot.tip(
+      g9_filtered,
+      Plot.pointerX({
+        x: "annee",
+        y: "indice",
+        title: d => `${d.annee}\n${d.serie} : ${d.indice}`
+      })
+    )
+  ]
+})
+```
 
 ---
 
@@ -716,16 +1206,145 @@ L’indice des appartements existants a augmenté de **+73.5%** au niveau nation
 
 Cette convergence à l’échelle de l’ensemble de la période masque toutefois des différences plus marquées à court terme. Entre 2018 et 2020, les prix des appartements existants ont progressé plus rapidement dans la région de Luxembourg que dans le reste du pays. Au cours de cette période, l’écart moyen entre les deux indices atteint 15 points d’indice. À partir de 2024, les trajectoires se rapprochent progressivement et les indices convergent à nouveau.
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 10 : L'indice des prix des appartements existants pour la région de Luxembourg a augmenté plus rapidement entre 2018 et 2020
-**Description** : Appartements existants de 2015 Q1 à 2026 Q2 :
-- *Axe de gauche (Indice des prix, base 100 en 2015 Q1)* : Courbes d'indice pour la région de Luxembourg vs le Reste du pays.
-- *Axe de droite (barres)* : Nombre de transactions pour la région de Luxembourg vs le Reste du pays.
+### Graphique 10 : L'indice des prix des appartements existants pour la région de Luxembourg a augmenté plus rapidement entre 2018 et 2020
 
-**Source** : Fichier de la Publicité Foncière, STATEC, AED (2015-2026).  
-*Remarque : la région de Luxembourg regroupe Luxembourg-Ville, Hesperange, Bertrange, Strassen et Walferdange.*  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+```{ojs}
+//| echo: false
+g10_data = transpose(g10_raw).map(d => ({
+  ...d,
+  date: new Date(d.date)
+}))
+
+g10_idx_long = g10_data.flatMap(d => [
+  {
+    date: d.date,
+    periode: d.periode,
+    zone: "Région de Luxembourg",
+    indice: d.indice_prix_luxembourg
+  },
+  {
+    date: d.date,
+    periode: d.periode,
+    zone: "Reste du pays",
+    indice: d.indice_prix_reste_pays
+  }
+])
+
+g10_tx_long = g10_data.flatMap(d => [
+  {
+    date: d.date,
+    periode: d.periode,
+    zone: "Région de Luxembourg",
+    transactions: d.transactions_luxembourg
+  },
+  {
+    date: d.date,
+    periode: d.periode,
+    zone: "Reste du pays",
+    transactions: d.transactions_reste_pays
+  }
+])
+
+viewof g10_view = Inputs.radio(
+  ["Vue combinée (Indices & Transactions)", "Indices des prix seulement", "Transactions seulement"],
+  {
+    value: "Vue combinée (Indices & Transactions)",
+    label: "Affichage :"
+  }
+)
+
+chart_g10_idx = Plot.plot({
+  title: "Indice des prix des appartements existants (Base 100 = 2015 Q1)",
+  subtitle: "Région de Luxembourg vs Reste du pays (2015 Q1 à 2026 Q2)",
+  width: width,
+  height: g10_view === "Vue combinée (Indices & Transactions)" ? 270 : 380,
+  marginTop: 35,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Indice (Base 100 = 2015 Q1)",
+    domain: [90, 210]
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  color: {
+    domain: ["Région de Luxembourg", "Reste du pays"],
+    range: ["#f59e0b", "#1e3a8a"],
+    legend: true
+  },
+  marks: [
+    Plot.ruleY([100], { stroke: "#94a3b8", strokeDasharray: "3 3", strokeWidth: 1.2 }),
+    Plot.lineY(g10_idx_long, {
+      x: "date",
+      y: "indice",
+      stroke: "zone",
+      strokeWidth: 2.4,
+      curve: "catmull-rom"
+    }),
+    Plot.dot(g10_idx_long, {
+      x: "date",
+      y: "indice",
+      stroke: "zone",
+      fill: "#ffffff",
+      r: 3
+    }),
+    Plot.tip(
+      g10_idx_long,
+      Plot.pointerX({
+        x: "date",
+        y: "indice",
+        title: d => `${d.periode}\n${d.zone} : ${d.indice}`
+      })
+    )
+  ]
+})
+
+chart_g10_tx = Plot.plot({
+  title: "Nombre de transactions d'appartements existants",
+  subtitle: "Actes notariés enregistrés par trimestre (2015 Q1 à 2026 Q2)",
+  width: width,
+  height: g10_view === "Vue combinée (Indices & Transactions)" ? 250 : 380,
+  marginTop: 35,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Nombre de transactions"
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  color: {
+    domain: ["Reste du pays", "Région de Luxembourg"],
+    range: ["#93c5fd", "#1e3a8a"],
+    legend: true
+  },
+  marks: [
+    Plot.rectY(g10_tx_long, {
+      x: "date",
+      y: "transactions",
+      fill: "zone",
+      interval: d3.timeMonth.every(3),
+      inset: 0.5
+    }),
+    Plot.tip(
+      g10_tx_long,
+      Plot.pointerX({
+        x: "date",
+        y: "transactions",
+        title: d => `${d.periode}\n${d.zone} : ${d.transactions} ventes`
+      })
+    )
+  ]
+})
+
+html`<div>
+  ${g10_view !== "Transactions seulement" ? chart_g10_idx : ""}
+  ${g10_view !== "Indices des prix seulement" ? chart_g10_tx : ""}
+</div>`
+```
 
 ### Appartements en construction (VEFA) : Région de Luxembourg vs Reste du pays
 
@@ -733,16 +1352,145 @@ La situation est sensiblement différente pour les appartements vendus en état 
 
 L’interprétation de ces résultats doit néanmoins être effectuée avec prudence. Depuis 2023, le marché des logements neufs connaît un net recul du nombre de transactions. La faiblesse des volumes observés entraîne une plus grande volatilité des indices, particulièrement pour la région de Luxembourg où le nombre d’observations est plus limité.
 
-::: {.callout-tip icon=false}
-### 📊 Graphique 11 : L'indice des prix des appartements VEFA est plus volatil depuis 2023 à la suite du recul du nombre de transactions
-**Description** : Appartements en construction (VEFA) de 2015 Q1 à 2026 Q2 :
-- *Axe de gauche (Indice des prix, base 100 en 2015 Q1)* : Courbes d'indice pour la région de Luxembourg vs le Reste du pays.
-- *Axe de droite (barres)* : Nombre de transactions pour la région de Luxembourg vs le Reste du pays.
+### Graphique 11 : L'indice des prix des appartements VEFA est plus volatil depuis 2023 à la suite du recul du nombre de transactions
 
-**Source** : Fichier de la Publicité Foncière, STATEC, AED (2015-2026).  
-*Remarque : la région de Luxembourg regroupe Luxembourg-Ville, Hesperange, Bertrange, Strassen et Walferdange.*  
-*(Graphique interactif Observable JS à insérer ici)*
-:::
+```{ojs}
+//| echo: false
+g11_data = transpose(g11_raw).map(d => ({
+  ...d,
+  date: new Date(d.date)
+}))
+
+g11_idx_long = g11_data.flatMap(d => [
+  {
+    date: d.date,
+    periode: d.periode,
+    zone: "Région de Luxembourg",
+    indice: d.indice_prix_luxembourg
+  },
+  {
+    date: d.date,
+    periode: d.periode,
+    zone: "Reste du pays",
+    indice: d.indice_prix_reste_pays
+  }
+])
+
+g11_tx_long = g11_data.flatMap(d => [
+  {
+    date: d.date,
+    periode: d.periode,
+    zone: "Région de Luxembourg",
+    transactions: d.transactions_luxembourg
+  },
+  {
+    date: d.date,
+    periode: d.periode,
+    zone: "Reste du pays",
+    transactions: d.transactions_reste_pays
+  }
+])
+
+viewof g11_view = Inputs.radio(
+  ["Vue combinée (Indices & Transactions)", "Indices des prix seulement", "Transactions seulement"],
+  {
+    value: "Vue combinée (Indices & Transactions)",
+    label: "Affichage :"
+  }
+)
+
+chart_g11_idx = Plot.plot({
+  title: "Indice des prix des appartements VEFA (Base 100 = 2015 Q1)",
+  subtitle: "Région de Luxembourg vs Reste du pays (2015 Q1 à 2026 Q2)",
+  width: width,
+  height: g11_view === "Vue combinée (Indices & Transactions)" ? 270 : 380,
+  marginTop: 35,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Indice (Base 100 = 2015 Q1)",
+    domain: [90, 230]
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  color: {
+    domain: ["Région de Luxembourg", "Reste du pays"],
+    range: ["#f59e0b", "#1e3a8a"],
+    legend: true
+  },
+  marks: [
+    Plot.ruleY([100], { stroke: "#94a3b8", strokeDasharray: "3 3", strokeWidth: 1.2 }),
+    Plot.lineY(g11_idx_long, {
+      x: "date",
+      y: "indice",
+      stroke: "zone",
+      strokeWidth: 2.4,
+      curve: "catmull-rom"
+    }),
+    Plot.dot(g11_idx_long, {
+      x: "date",
+      y: "indice",
+      stroke: "zone",
+      fill: "#ffffff",
+      r: 3
+    }),
+    Plot.tip(
+      g11_idx_long,
+      Plot.pointerX({
+        x: "date",
+        y: "indice",
+        title: d => `${d.periode}\n${d.zone} : ${d.indice}`
+      })
+    )
+  ]
+})
+
+chart_g11_tx = Plot.plot({
+  title: "Nombre de transactions d'appartements VEFA",
+  subtitle: "Actes notariés enregistrés par trimestre (2015 Q1 à 2026 Q2)",
+  width: width,
+  height: g11_view === "Vue combinée (Indices & Transactions)" ? 250 : 380,
+  marginTop: 35,
+  marginRight: 40,
+  y: {
+    grid: true,
+    label: "Nombre de transactions"
+  },
+  x: {
+    label: null,
+    tickFormat: "%Y"
+  },
+  color: {
+    domain: ["Reste du pays", "Région de Luxembourg"],
+    range: ["#fcd34d", "#b45309"],
+    legend: true
+  },
+  marks: [
+    Plot.rectY(g11_tx_long, {
+      x: "date",
+      y: "transactions",
+      fill: "zone",
+      interval: d3.timeMonth.every(3),
+      inset: 0.5
+    }),
+    Plot.tip(
+      g11_tx_long,
+      Plot.pointerX({
+        x: "date",
+        y: "transactions",
+        title: d => `${d.periode}\n${d.zone} : ${d.transactions} ventes`
+      })
+    )
+  ]
+})
+
+html`<div>
+  ${g11_view !== "Transactions seulement" ? chart_g11_idx : ""}
+  ${g11_view !== "Indices des prix seulement" ? chart_g11_tx : ""}
+</div>`
+```
 
 Dans l’ensemble, les résultats suggèrent que les écarts territoriaux sont davantage marqués sur le marché du neuf que sur celui de l’existant. Alors que les prix des appartements existants présentent des évolutions relativement similaires entre la région de Luxembourg et le reste du pays sur le long terme, les appartements VEFA affichent une croissance beaucoup plus forte dans la région de la capitale. Cette différence pourrait refléter une pression plus importante sur le foncier constructible dans les communes les plus attractives du pays ainsi qu’une concentration des nouveaux projets résidentiels dans des zones où la demande reste structurellement élevée.
 

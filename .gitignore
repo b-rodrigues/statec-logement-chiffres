@@ -3,6 +3,7 @@
 *_files/
 index.html
 public/
+data-raw/
 
 # R
 .Rproj.user
